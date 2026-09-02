@@ -185,7 +185,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         </Content>
 
         <Footer style={{ textAlign: 'center', backgroundColor: '#0f0f0f', color: '#595959', fontSize: 12 }}>
-          Hevy Workout Visualiser &copy; {new Date().getFullYear()} &bull; Built with React, Vite & Ant Design
+          Hevy Workout Visualiser &copy; {new Date().getFullYear()} &bull; Built with React, Vite & Ant Design. This is a hobby project. It is not affiliated in any way to the Hevy app.
         </Footer>
       </Layout>
     </Layout>
