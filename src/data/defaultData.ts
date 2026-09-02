@@ -1,0 +1,35 @@
+// Sample placeholder data for initial app load if no CSV is uploaded
+export const DEFAULT_WORKOUT_CSV = `"title","start_time","end_time","description","exercise_title","superset_id","exercise_notes","set_index","set_type","weight_kg","reps","distance_km","duration_seconds","rpe"
+"Push Day","15 Jan 2026, 18:00","15 Jan 2026, 19:15","","Bench Press (Barbell)",,"",0,"warmup",40,10,,,
+"Push Day","15 Jan 2026, 18:00","15 Jan 2026, 19:15","","Bench Press (Barbell)",,"",1,"normal",80,8,,,
+"Push Day","15 Jan 2026, 18:00","15 Jan 2026, 19:15","","Bench Press (Barbell)",,"",2,"normal",85,6,,,
+"Push Day","15 Jan 2026, 18:00","15 Jan 2026, 19:15","","Incline Bench Press (Dumbbell)",,"",0,"normal",30,8,,,
+"Push Day","15 Jan 2026, 18:00","15 Jan 2026, 19:15","","Incline Bench Press (Dumbbell)",,"",1,"normal",30,8,,,
+"Push Day","15 Jan 2026, 18:00","15 Jan 2026, 19:15","","Lateral Raise (Dumbbell)",,"",0,"normal",12,12,,,
+"Push Day","15 Jan 2026, 18:00","15 Jan 2026, 19:15","","Lateral Raise (Dumbbell)",,"",1,"normal",12,10,,,
+"Push Day","15 Jan 2026, 18:00","15 Jan 2026, 19:15","","Triceps Pushdown",,"",0,"normal",25,12,,,
+"Push Day","15 Jan 2026, 18:00","15 Jan 2026, 19:15","","Triceps Pushdown",,"",1,"normal",25,10,,,
+"Pull Day","17 Jan 2026, 17:30","17 Jan 2026, 18:45","","Deadlift (Barbell)",,"",0,"warmup",60,8,,,
+"Pull Day","17 Jan 2026, 17:30","17 Jan 2026, 18:45","","Deadlift (Barbell)",,"",1,"normal",120,5,,,
+"Pull Day","17 Jan 2026, 17:30","17 Jan 2026, 18:45","","Deadlift (Barbell)",,"",2,"normal",140,4,,,
+"Pull Day","17 Jan 2026, 17:30","17 Jan 2026, 18:45","","Lat Pulldown (Cable)",,"",0,"normal",65,10,,,
+"Pull Day","17 Jan 2026, 17:30","17 Jan 2026, 18:45","","Lat Pulldown (Cable)",,"",1,"normal",70,8,,,
+"Pull Day","17 Jan 2026, 17:30","17 Jan 2026, 18:45","","Bicep Curl (Dumbbell)",,"",0,"normal",16,10,,,
+"Pull Day","17 Jan 2026, 17:30","17 Jan 2026, 18:45","","Bicep Curl (Dumbbell)",,"",1,"normal",16,8,,,
+"Leg Day","20 Jan 2026, 18:00","20 Jan 2026, 19:20","","Squat (Barbell)",,"",0,"warmup",60,8,,,
+"Leg Day","20 Jan 2026, 18:00","20 Jan 2026, 19:20","","Squat (Barbell)",,"",1,"normal",100,6,,,
+"Leg Day","20 Jan 2026, 18:00","20 Jan 2026, 19:20","","Squat (Barbell)",,"",2,"normal",110,5,,,
+"Leg Day","20 Jan 2026, 18:00","20 Jan 2026, 19:20","","Leg Extension (Machine)",,"",0,"normal",50,12,,,
+"Leg Day","20 Jan 2026, 18:00","20 Jan 2026, 19:20","","Leg Extension (Machine)",,"",1,"normal",55,10,,,
+"Leg Day","20 Jan 2026, 18:00","20 Jan 2026, 19:20","","Lying Leg Curl (Machine)",,"",0,"normal",45,10,,,
+"Leg Day","20 Jan 2026, 18:00","20 Jan 2026, 19:20","","Standing Calf Raise (Machine)",,"",0,"normal",70,15,,,
+"Upper Body","24 Jan 2026, 11:00","24 Jan 2026, 12:15","","Bench Press (Barbell)",,"",0,"normal",85,6,,,
+"Upper Body","24 Jan 2026, 11:00","24 Jan 2026, 12:15","","Bent Over Row (Barbell)",,"",0,"normal",70,8,,,
+"Upper Body","24 Jan 2026, 11:00","24 Jan 2026, 12:15","","Shoulder Press (Dumbbell)",,"",0,"normal",26,8,,,
+"Upper Body","24 Jan 2026, 11:00","24 Jan 2026, 12:15","","Pull Up",,"",0,"normal",0,10,,,
+"Upper Body","24 Jan 2026, 11:00","24 Jan 2026, 12:15","","Cable Crunch",,"",0,"normal",35,15,,,`;
+
+export const DEFAULT_MEASUREMENT_CSV = `"date","weight_kg","fat_percent","neck_cm","shoulder_cm","chest_cm","left_bicep_cm","right_bicep_cm","left_forearm_cm","right_forearm_cm","abdomen_cm","waist_cm","hips_cm","left_thigh_cm","right_thigh_cm","left_calf_cm","right_calf_cm"
+"1 Jan 2026, 08:00",75,15,,,,,,,,,,,,,,
+"15 Jan 2026, 08:00",75.4,14.8,,,,,,,,,,,,,,
+"1 Feb 2026, 08:00",75.8,14.6,,,,,,,,,,,,,,`;
