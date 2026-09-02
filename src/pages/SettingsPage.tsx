@@ -427,14 +427,14 @@ export const SettingsPage: React.FC = () => {
             Stay on Settings
           </Button>,
           <Button
-            key="dashboard"
+            key="navigate"
             type="primary"
             onClick={() => {
               setSuccessModalData((prev) => ({ ...prev, visible: false }));
-              navigate('/');
+              navigate(successModalData.type === 'workout' ? '/' : '/measurements');
             }}
           >
-            Go to Dashboard
+            {successModalData.type === 'workout' ? 'Go to Dashboard' : 'Go to Measurements'}
           </Button>,
         ]}
       >
