@@ -22,7 +22,7 @@ import {
   LeftOutlined,
   RightOutlined,
 } from '@ant-design/icons';
-import { Settings, UploadCloud, FileSpreadsheet, ShieldCheck, FolderArchive, Dumbbell } from 'lucide-react';
+import { Settings, UploadCloud, FileSpreadsheet, ShieldCheck, FileDown, Dumbbell } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useWorkoutData } from '../hooks/useWorkoutData';
@@ -147,29 +147,29 @@ export const SettingsPage: React.FC = () => {
     },
     {
       title: 'Export CSV',
-      sub: 'Generate export',
-      description: 'Tap "Export Data" and confirm. Hevy will export an archive containing your workout_data.csv and measurement_data.csv files.',
+      sub: 'Tap Export Data',
+      description: 'Tap "Export Data" and confirm. Hevy will generate your single CSV export file (workout_data.csv or measurement_data.csv).',
       icon: <UploadCloud size={16} />,
     },
     {
-      title: 'Save & Unzip',
-      sub: 'iOS & Android Files',
+      title: 'Save to Files',
+      sub: 'iOS & Android',
       description: (
         <div>
           <div style={{ marginBottom: 6 }}>
-            <strong style={{ color: '#1890ff' }}>📱 iOS (iPhone / iPad):</strong> On the share popup, tap <strong>"Save to Files"</strong> and pick a folder (e.g. Downloads). Open the <strong>Files app</strong>, tap <code>hevy_export.zip</code> once to unzip it, and you'll find <code>workout_data.csv</code> and <code>measurement_data.csv</code>.
+            <strong style={{ color: '#1890ff' }}>📱 iOS (iPhone / iPad):</strong> On the share sheet, tap <strong>"Save to Files"</strong> and choose your <strong>Downloads</strong> or <strong>On My iPhone</strong> folder.
           </div>
           <div>
-            <strong style={{ color: '#52c41a' }}>🤖 Android:</strong> Tap <strong>"Save to Downloads"</strong> (or Save to Device). Open <strong>Files by Google</strong> or your device's file manager, tap the ZIP archive and select <strong>"Extract"</strong>.
+            <strong style={{ color: '#52c41a' }}>🤖 Android:</strong> Tap <strong>"Save to Downloads"</strong> (or Save to Device) to save the CSV file directly.
           </div>
         </div>
       ),
-      icon: <FolderArchive size={16} />,
+      icon: <FileDown size={16} />,
     },
     {
       title: 'Upload Here',
       sub: 'Drop or click',
-      description: 'Drag and drop or click to upload the extracted workout_data.csv and measurement_data.csv files into the upload boxes above!',
+      description: 'Drag and drop or click to upload your saved CSV file into the respective upload box above!',
       icon: <ShieldCheck size={16} />,
     },
   ];
