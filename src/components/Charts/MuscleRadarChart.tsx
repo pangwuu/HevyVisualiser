@@ -49,6 +49,9 @@ export const MuscleRadarChart: React.FC<MuscleRadarChartProps> = ({
     maintainAspectRatio: false,
     scales: {
       r: {
+        beginAtZero: true,
+        min: 0,
+        suggestedMin: 0,
         angleLines: {
           color: '#303030',
         },
@@ -66,6 +69,7 @@ export const MuscleRadarChart: React.FC<MuscleRadarChartProps> = ({
           color: '#8c8c8c',
           backdropColor: 'transparent',
           showLabelBackdrop: false,
+          precision: 0,
         },
       },
     },
