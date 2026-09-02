@@ -16,6 +16,7 @@ export const App: React.FC = () => {
       theme={{
         algorithm: theme.darkAlgorithm,
         token: {
+          fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
           colorPrimary: '#1890ff',
           colorBgBase: '#0f0f0f',
           colorBgContainer: '#141414',

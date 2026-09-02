@@ -7,9 +7,45 @@ body {
   padding: 0;
   background-color: #0f0f0f;
   color: #e6e6e6;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
-    sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ensure completely unified font across statistics, numbers, suffixes, titles and inputs */
+body, 
+.ant-statistic, 
+.ant-statistic-title,
+.ant-statistic-content,
+.ant-statistic-content-value,
+.ant-statistic-content-value-int,
+.ant-statistic-content-value-decimal,
+.ant-statistic-content-suffix,
+.ant-statistic-content-prefix,
+.ant-typography,
+.ant-btn,
+.ant-select,
+.ant-input,
+.ant-table {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+}
+
+.ant-statistic-content {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.ant-statistic-content-suffix {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #8c8c8c !important;
+  margin-inline-start: 4px !important;
+}
+
+.ant-statistic-content-value {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+  font-weight: 700 !important;
 }
 
 /* Custom scrollbar for dark theme */
