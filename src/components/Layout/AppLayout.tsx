@@ -10,6 +10,7 @@ import {
   MenuOutlined,
   CloudUploadOutlined,
 } from '@ant-design/icons';
+import { Dumbbell } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useWorkoutData } from '../../hooks/useWorkoutData';
 
@@ -69,7 +70,9 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       {/* Brand logo */}
       <div style={{ padding: '20px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
-        <span style={{ fontSize: 24 }}>🏋️</span>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 34, height: 34, borderRadius: 8, backgroundColor: 'rgba(24, 144, 255, 0.15)' }}>
+          <Dumbbell size={20} color="#1890ff" />
+        </div>
         {!collapsed && (
           <div>
             <div style={{ fontWeight: 800, fontSize: 16, color: '#fff', letterSpacing: '0.5px' }}>

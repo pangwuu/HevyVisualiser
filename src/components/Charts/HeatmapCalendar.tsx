@@ -150,8 +150,10 @@ export const HeatmapCalendar: React.FC<HeatmapCalendarProps> = ({
                         {day.sessions.map((s, sIdx) => (
                           <div key={sIdx} style={{ marginTop: 4, borderTop: sIdx > 0 ? '1px solid #434343' : undefined, paddingTop: sIdx > 0 ? 4 : 0 }}>
                             <div style={{ fontWeight: 500 }}>{s.title}</div>
-                            <div style={{ color: '#bfbfbf', fontSize: 11 }}>
-                              ⏱️ {s.durationMinutes} mins &nbsp;|&nbsp; 🏋️ {Math.round(s.totalVolumeKg)} kg &nbsp;|&nbsp; 📊 {s.sets.length} sets
+                            <div style={{ color: '#bfbfbf', fontSize: 11, marginTop: 2 }}>
+                              <span>{s.durationMinutes} mins</span> &bull;{' '}
+                              <span style={{ color: '#fa8c16' }}>{Math.round(s.totalVolumeKg).toLocaleString()} kg</span> &bull;{' '}
+                              <span style={{ color: '#1890ff' }}>{s.sets.length} sets</span>
                             </div>
                             <div style={{ color: '#8c8c8c', fontSize: 10, marginTop: 2 }}>
                               {s.exercises.slice(0, 3).join(', ')}

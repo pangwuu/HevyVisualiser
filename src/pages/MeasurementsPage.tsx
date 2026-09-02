@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, Typography, Table } from 'antd';
+import { IconRulerMeasure } from '@tabler/icons-react';
 import dayjs from 'dayjs';
 import { useWorkoutData } from '../hooks/useWorkoutData';
 import { MeasurementChart } from '../components/Charts/MeasurementChart';
@@ -66,8 +67,9 @@ export const MeasurementsPage: React.FC = () => {
   return (
     <div>
       <div style={{ marginBottom: 16 }}>
-        <Title level={2} style={{ color: '#fff', margin: 0 }}>
-          📏 Body Measurements & Weight Tracker
+        <Title level={2} style={{ color: '#fff', margin: 0, display: 'flex', alignItems: 'center', gap: 10 }}>
+          <IconRulerMeasure size={26} color="#1890ff" />
+          Body Measurements & Weight Tracker
         </Title>
         <Text type="secondary">
           Log and observe body composition changes, scale weight, and circumference trends.

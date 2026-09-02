@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 import { Row, Col, Card, Typography, Tag, Progress, Space, Alert } from 'antd';
 import { DotChartOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { BicepsFlexed, Shield, Target, LayoutGrid, Bone } from 'lucide-react';
+import { IconRun } from '@tabler/icons-react';
 import { useWorkoutData } from '../hooks/useWorkoutData';
 import { TimeFilterBar } from '../components/Filters/TimeFilterBar';
 import { MuscleRadarChart } from '../components/Charts/MuscleRadarChart';
@@ -10,13 +12,13 @@ import { MuscleGroup, WorkoutSet } from '../types';
 
 const { Title, Text } = Typography;
 
-const MUSCLE_ICONS: Record<MuscleGroup, string> = {
-  Back: '🦅',
-  Legs: '🦵',
-  Chest: '🛡️',
-  Arms: '💪',
-  Shoulders: '🎯',
-  Core: '🧱',
+const MUSCLE_ICONS: Record<MuscleGroup, React.ReactNode> = {
+  Back: <Bone size={20} color="#1890ff" />,
+  Legs: <IconRun size={20} color="#52c41a" />,
+  Chest: <Shield size={20} color="#fa8c16" />,
+  Arms: <BicepsFlexed size={20} color="#eb2f96" />,
+  Shoulders: <Target size={20} color="#722ed1" />,
+  Core: <LayoutGrid size={20} color="#13c2c2" />,
 };
 
 const MUSCLE_COLORS: Record<MuscleGroup, string> = {
@@ -29,56 +31,48 @@ const MUSCLE_COLORS: Record<MuscleGroup, string> = {
 };
 
 export const MusclesPage: React.FC = () => {
-  const { muscleDistribution, filteredSets } = useWorkoutData();
+  const { filteredSets, muscleDistribution } = useWorkoutData();
+
+  const muscleCardStats = useMemo(() => {
+    return MUSCLE_GROUPS.map((mg) => {
+      const targetSets = filteredSets.filter((s: WorkoutSet) => s.muscleGroups.includes(mg));
+      const workingSets = targetSets.filter((s: WorkoutSet) => s.setType !== 'warmup');
+      const totalVolume = workingSets.reduce((acc: number, s: WorkoutSet) => acc + ((s.weightKg || 0) * (s.reps || 0)), 0);
+
+      const exerciseCounts: Record<string, number> = {};
+      targetSets.forEach((s: WorkoutSet) => {
+        exerciseCounts[s.exerciseTitle] = (exerciseCounts[s.exerciseTitle] || 0) + 1;
+      });
+
+      const topExercises = Object.entries(exerciseCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([title, sets]) => ({ title, sets }));
+
+      return {
+        muscleGroup: mg,
+        totalSets: targetSets.length,
+        workingSets: workingSets.length,
+        totalVolumeKg: Math.round(totalVolume),
+        topExercises,
+        color: MUSCLE_COLORS[mg],
+        icon: MUSCLE_ICONS[mg],
+      };
+    });
+  }, [filteredSets]);
 
   const totalSetsAcrossMuscles = muscleDistribution.setsData.reduce((a: number, b: number) => a + b, 0);
   const totalVolumeAcrossMuscles = muscleDistribution.volumeData.reduce((a: number, b: number) => a + b, 0);
 
-  const topExercisesByMuscle = useMemo(() => {
-    const map: Record<MuscleGroup, Record<string, number>> = {
-      Back: {},
-      Legs: {},
-      Chest: {},
-      Arms: {},
-      Shoulders: {},
-      Core: {},
-    };
-
-    filteredSets.forEach((s: WorkoutSet) => {
-      s.muscleGroups.forEach((mg: MuscleGroup) => {
-        if (map[mg]) {
-          map[mg][s.exerciseTitle] = (map[mg][s.exerciseTitle] || 0) + 1;
-        }
-      });
-    });
-
-    const result: Record<MuscleGroup, Array<{ title: string; count: number }>> = {
-      Back: [],
-      Legs: [],
-      Chest: [],
-      Arms: [],
-      Shoulders: [],
-      Core: [],
-    };
-
-    MUSCLE_GROUPS.forEach((mg) => {
-      result[mg] = Object.entries(map[mg])
-        .map(([title, count]) => ({ title, count }))
-        .sort((a, b) => b.count - a.count)
-        .slice(0, 4);
-    });
-
-    return result;
-  }, [filteredSets]);
-
   return (
     <div>
       <div style={{ marginBottom: 16 }}>
-        <Title level={2} style={{ color: '#fff', margin: 0 }}>
-          🎯 Muscle Group Breakdown & Distribution
+        <Title level={2} style={{ color: '#fff', margin: 0, display: 'flex', alignItems: 'center', gap: 10 }}>
+          <Target size={26} color="#1890ff" />
+          Muscle Group Breakdown & Distribution
         </Title>
         <Text type="secondary">
-          Analyze training balance across Back, Legs, Chest, Arms, Shoulders, and Core.
+          Track set volume, workload distribution across muscle groups, and compound exercise contributions.
         </Text>
       </div>
 
@@ -119,28 +113,26 @@ export const MusclesPage: React.FC = () => {
       </Title>
 
       <Row gutter={[16, 16]}>
-        {MUSCLE_GROUPS.map((mg) => {
-          const setCount = muscleDistribution.setsByMuscle[mg] || 0;
-          const volume = muscleDistribution.volumeByMuscle[mg] || 0;
-          const setPct = totalSetsAcrossMuscles > 0 ? Math.round((setCount / totalSetsAcrossMuscles) * 100) : 0;
-          const volPct = totalVolumeAcrossMuscles > 0 ? Math.round((volume / totalVolumeAcrossMuscles) * 100) : 0;
-          const color = MUSCLE_COLORS[mg];
-          const topEx = topExercisesByMuscle[mg] || [];
+        {muscleCardStats.map((stat) => {
+          const setPct = totalSetsAcrossMuscles > 0 ? Math.round((stat.totalSets / totalSetsAcrossMuscles) * 100) : 0;
+          const volPct = totalVolumeAcrossMuscles > 0 ? Math.round((stat.totalVolumeKg / totalVolumeAcrossMuscles) * 100) : 0;
 
           return (
-            <Col xs={24} sm={12} lg={8} key={mg}>
+            <Col xs={24} sm={12} lg={8} key={stat.muscleGroup}>
               <Card
                 style={{
                   backgroundColor: '#141414',
                   borderColor: '#303030',
-                  borderTop: `3px solid ${color}`,
+                  borderTop: `3px solid ${stat.color}`,
                   height: '100%',
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span style={{ fontSize: 24 }}>{MUSCLE_ICONS[mg]}</span>
-                    <Text strong style={{ fontSize: 18, color }}>{mg}</Text>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 32, height: 32, borderRadius: 6, backgroundColor: 'rgba(255, 255, 255, 0.05)' }}>
+                      {stat.icon}
+                    </div>
+                    <Text strong style={{ fontSize: 18, color: stat.color }}>{stat.muscleGroup}</Text>
                   </div>
                   <Tag color="geekblue" style={{ fontSize: 12 }}>
                     {setPct}% of total sets
@@ -150,13 +142,13 @@ export const MusclesPage: React.FC = () => {
                 <div style={{ marginBottom: 16 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, marginBottom: 4 }}>
                     <Text type="secondary">Total Sets</Text>
-                    <Text strong style={{ color: '#fff' }}>{setCount} sets</Text>
+                    <Text strong style={{ color: '#fff' }}>{stat.totalSets} sets</Text>
                   </div>
-                  <Progress percent={setPct} strokeColor={color} trailColor="#262626" size="small" showInfo={false} />
+                  <Progress percent={setPct} strokeColor={stat.color} trailColor="#262626" size="small" showInfo={false} />
 
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, marginTop: 8, marginBottom: 4 }}>
                     <Text type="secondary">Total Volume</Text>
-                    <Text strong style={{ color: '#fa8c16' }}>{(volume / 1000).toFixed(1)} tonnes ({volPct}%)</Text>
+                    <Text strong style={{ color: '#fa8c16' }}>{(stat.totalVolumeKg / 1000).toFixed(1)} tonnes ({volPct}%)</Text>
                   </div>
                   <Progress percent={volPct} strokeColor="#fa8c16" trailColor="#262626" size="small" showInfo={false} />
                 </div>
@@ -165,27 +157,27 @@ export const MusclesPage: React.FC = () => {
                   <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: 6 }}>
                     Top Exercises:
                   </Text>
-                  {topEx.length > 0 ? (
+                  {stat.topExercises.length > 0 ? (
                     <Space direction="vertical" size={4} style={{ width: '100%' }}>
-                      {topEx.map((ex) => (
+                      {stat.topExercises.map((ex) => (
                         <div
                           key={ex.title}
                           style={{
                             display: 'flex',
                             justifyContent: 'space-between',
                             fontSize: 12,
-                            padding: '3px 6px',
-                            backgroundColor: '#1f1f1f',
-                            borderRadius: 4,
+                            color: '#bfbfbf',
                           }}
                         >
-                          <Text ellipsis style={{ maxWidth: 180, color: '#d9d9d9' }}>{ex.title}</Text>
-                          <span style={{ color: '#8c8c8c' }}>{ex.count} sets</span>
+                          <span style={{ maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {ex.title}
+                          </span>
+                          <span style={{ color: '#8c8c8c' }}>{ex.sets} sets</span>
                         </div>
                       ))}
                     </Space>
                   ) : (
-                    <Text type="secondary" style={{ fontSize: 12 }}>No sets recorded</Text>
+                    <Text type="secondary" style={{ fontSize: 12 }}>No sets logged yet</Text>
                   )}
                 </div>
               </Card>

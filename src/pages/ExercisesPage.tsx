@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Card, Typography, Table, Input, Select, Tag, Space, Button } from 'antd';
-import { SearchOutlined, LineChartOutlined, FireFilled } from '@ant-design/icons';
+import { SearchOutlined, LineChartOutlined } from '@ant-design/icons';
+import { BicepsFlexed, Flame } from 'lucide-react';
+import { IconRosetteNumber1, IconRosetteNumber2, IconRosetteNumber3 } from '@tabler/icons-react';
 import { useWorkoutData } from '../hooks/useWorkoutData';
 import { TimeFilterBar } from '../components/Filters/TimeFilterBar';
 import { ExerciseProgressChart } from '../components/Charts/ExerciseProgressChart';
@@ -27,12 +29,13 @@ export const ExercisesPage: React.FC = () => {
     {
       title: 'Rank',
       key: 'rank',
-      render: (_: any, __: any, index: number) => (
-        <span style={{ color: index < 3 ? '#faad14' : '#8c8c8c', fontWeight: 600 }}>
-          {index === 0 ? '🥇 1' : index === 1 ? '🥈 2' : index === 2 ? '🥉 3' : `#${index + 1}`}
-        </span>
-      ),
-      width: 80,
+      render: (_: any, __: any, index: number) => {
+        if (index === 0) return <span style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#faad14', fontWeight: 700 }}><IconRosetteNumber1 size={20} color="#faad14" /> 1</span>;
+        if (index === 1) return <span style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#d9d9d9', fontWeight: 700 }}><IconRosetteNumber2 size={20} color="#d9d9d9" /> 2</span>;
+        if (index === 2) return <span style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#d48806', fontWeight: 700 }}><IconRosetteNumber3 size={20} color="#d48806" /> 3</span>;
+        return <span style={{ color: '#8c8c8c', fontWeight: 600, paddingLeft: 8 }}>#{index + 1}</span>;
+      },
+      width: 90,
     },
     {
       title: 'Exercise Name',
@@ -68,8 +71,8 @@ export const ExercisesPage: React.FC = () => {
       dataIndex: 'totalSessions',
       key: 'totalSessions',
       render: (sessions: number) => (
-        <span style={{ fontWeight: 600, color: '#d9d9d9' }}>
-          <FireFilled style={{ color: '#52c41a', marginRight: 4 }} />
+        <span style={{ fontWeight: 600, color: '#d9d9d9', display: 'flex', alignItems: 'center' }}>
+          <Flame size={14} color="#52c41a" style={{ marginRight: 4 }} />
           {sessions}
         </span>
       ),
@@ -134,8 +137,9 @@ export const ExercisesPage: React.FC = () => {
   return (
     <div>
       <div style={{ marginBottom: 16 }}>
-        <Title level={2} style={{ color: '#fff', margin: 0 }}>
-          💪 Exercise Library & Strength Progress
+        <Title level={2} style={{ color: '#fff', margin: 0, display: 'flex', alignItems: 'center', gap: 10 }}>
+          <BicepsFlexed size={26} color="#1890ff" />
+          Exercise Library & Strength Progress
         </Title>
         <Text type="secondary">
           Track individual exercise frequency, 1RM strength progression curves, and volume over time.

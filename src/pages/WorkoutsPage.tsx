@@ -7,6 +7,7 @@ import {
   SearchOutlined,
   CheckCircleOutlined,
 } from '@ant-design/icons';
+import { BarChart3 } from 'lucide-react';
 import dayjs from 'dayjs';
 import { useWorkoutData } from '../hooks/useWorkoutData';
 import { TimeFilterBar } from '../components/Filters/TimeFilterBar';
@@ -61,39 +62,41 @@ export const WorkoutsPage: React.FC = () => {
     {
       title: 'Duration',
       dataIndex: 'durationMinutes',
-      key: 'durationMinutes',
-      render: (mins: number) => <span>{mins} mins</span>,
+      key: 'duration',
+      render: (m: number) => <span>{m} mins</span>,
       width: 100,
-      sorter: (a: WorkoutSession, b: WorkoutSession) => a.durationMinutes - b.durationMinutes,
     },
     {
       title: 'Total Volume',
       dataIndex: 'totalVolumeKg',
-      key: 'totalVolumeKg',
-      render: (vol: number) => <span style={{ color: '#fa8c16', fontWeight: 600 }}>{Math.round(vol).toLocaleString()} kg</span>,
-      width: 130,
-      sorter: (a: WorkoutSession, b: WorkoutSession) => a.totalVolumeKg - b.totalVolumeKg,
-    },
-    {
-      title: 'Sets Logged',
-      key: 'setsCount',
-      render: (_: any, record: WorkoutSession) => (
-        <span>{record.workingSetsCount} working ({record.totalSetsCount} total)</span>
+      key: 'volume',
+      render: (v: number) => (
+        <span style={{ color: '#fa8c16', fontWeight: 600 }}>
+          {Math.round(v).toLocaleString()} kg
+        </span>
       ),
-      width: 150,
+      sorter: (a: WorkoutSession, b: WorkoutSession) => a.totalVolumeKg - b.totalVolumeKg,
+      width: 130,
     },
     {
-      title: 'Exercises & Muscle Groups',
-      key: 'exercises',
+      title: 'Exercises & Sets',
+      key: 'details',
       render: (_: any, record: WorkoutSession) => (
         <div>
-          <div style={{ color: '#bfbfbf', fontSize: 13, marginBottom: 4 }}>
-            {record.exercises.join(', ')}
+          <div style={{ color: '#d9d9d9', fontSize: 13 }}>
+            {record.exercises.length} exercises &bull; {record.workingSetsCount} working sets ({record.totalSetsCount} total)
           </div>
-          <Space size={[0, 4]} wrap>
-            {record.muscleGroups.map((mg: string) => (
-              <Tag key={mg} color="geekblue" style={{ fontSize: 10 }}>{mg}</Tag>
+          <Space size={[0, 4]} wrap style={{ marginTop: 4 }}>
+            {record.exercises.slice(0, 4).map((ex) => (
+              <Tag key={ex} style={{ fontSize: 11, backgroundColor: '#1f1f1f', borderColor: '#303030', color: '#bfbfbf' }}>
+                {ex}
+              </Tag>
             ))}
+            {record.exercises.length > 4 && (
+              <Tag style={{ fontSize: 11, backgroundColor: '#1f1f1f', borderColor: '#303030', color: '#8c8c8c' }}>
+                +{record.exercises.length - 4} more
+              </Tag>
+            )}
           </Space>
         </div>
       ),
@@ -103,11 +106,12 @@ export const WorkoutsPage: React.FC = () => {
   return (
     <div>
       <div style={{ marginBottom: 16 }}>
-        <Title level={2} style={{ color: '#fff', margin: 0 }}>
-          📊 Workouts & Training Volume
+        <Title level={2} style={{ color: '#fff', margin: 0, display: 'flex', alignItems: 'center', gap: 10 }}>
+          <BarChart3 size={26} color="#1890ff" />
+          Workouts & Training Volume
         </Title>
         <Text type="secondary">
-          Detailed log of all training sessions, volume trends, personal records, and consistency.
+          Deep-dive into volume trends over time, workout consistency heatmaps, and session breakdown.
         </Text>
       </div>
 
