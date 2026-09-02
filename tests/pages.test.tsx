@@ -42,6 +42,9 @@ describe('Page Components Rendering', () => {
   it('renders ExercisesPage with 1RM progress section', () => {
     renderWithProviders(<ExercisesPage />);
     expect(screen.getByText(/Exercise Library & Strength Progress/i)).toBeInTheDocument();
+    expect(screen.getByText(/Trendline/i)).toBeInTheDocument();
+    expect(screen.getByText(/Confidence Band/i)).toBeInTheDocument();
+    expect(screen.getByText(/Detailed Stats/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/Search exercise/i)).toBeInTheDocument();
   });
 

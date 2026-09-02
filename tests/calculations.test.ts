@@ -7,6 +7,7 @@ import {
   calculateMuscleDistribution,
   calculateExerciseStats,
   calculatePersonalRecordsTimeline,
+  calculateLinearRegressionTrendline,
 } from '../src/utils/calculations';
 import { WorkoutSet, WorkoutSession, FilterState } from '../src/types';
 
@@ -223,6 +224,30 @@ describe('Calculations & Analytics', () => {
       expect(prs.length).toBe(2);
       expect(prs[0].estimated1RM).toBe(81.7);
       expect(prs[1].estimated1RM).toBe(70);
+    });
+  });
+
+  describe('calculateLinearRegressionTrendline', () => {
+    it('returns empty array for empty inputs and single element for 1 element', () => {
+      expect(calculateLinearRegressionTrendline([])).toEqual([]);
+      expect(calculateLinearRegressionTrendline([80])).toEqual([80]);
+    });
+
+    it('accurately computes linear regression slope and values for increasing trend', () => {
+      // Points: (0, 60), (1, 70), (2, 80) -> slope = 10, intercept = 60
+      const trend = calculateLinearRegressionTrendline([60, 70, 80]);
+      expect(trend).toEqual([60, 70, 80]);
+    });
+
+    it('accurately computes best-fit line for noisy data points', () => {
+      // Points: (0, 100), (1, 105), (2, 102), (3, 110)
+      // x = [0, 1, 2, 3], y = [100, 105, 102, 110]
+      // sumX = 6, sumY = 417, sumXY = 0 + 105 + 204 + 330 = 639, sumXX = 0 + 1 + 4 + 9 = 14
+      // slope = (4 * 639 - 6 * 417) / (4 * 14 - 36) = (2556 - 2502) / 20 = 54 / 20 = 2.7
+      // intercept = (417 - 2.7 * 6) / 4 = (417 - 16.2) / 4 = 400.8 / 4 = 100.2
+      // trend = [100.2, 102.9, 105.6, 108.3]
+      const trend = calculateLinearRegressionTrendline([100, 105, 102, 110]);
+      expect(trend).toEqual([100.2, 102.9, 105.6, 108.3]);
     });
   });
 });

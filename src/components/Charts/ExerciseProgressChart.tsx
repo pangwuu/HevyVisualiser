@@ -5,6 +5,7 @@ import { TrendingUp, Trophy, Zap, Layers, Weight } from 'lucide-react';
 import dayjs from 'dayjs';
 import './chartSetup';
 import { WorkoutSet, ExerciseStats } from '../../types';
+import { calculateLinearRegressionTrendline } from '../../utils/calculations';
 
 const { Text } = Typography;
 
@@ -30,6 +31,7 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
 
   const [showRawSets, setShowRawSets] = useState<boolean>(true);
   const [showConfidenceBand, setShowConfidenceBand] = useState<boolean>(true);
+  const [showTrendline, setShowTrendline] = useState<boolean>(true);
 
   const currentStats = useMemo(() => {
     return exerciseStats.find((e) => e.exerciseTitle === selectedExercise);
@@ -77,6 +79,10 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
 
     return Array.from(sessionMap.values()).sort((a, b) => a.date.unix() - b.date.unix());
   }, [exerciseSets]);
+
+  const trendlineData = useMemo(() => {
+    return calculateLinearRegressionTrendline(sessionAggregates.map((s) => s.max1RM));
+  }, [sessionAggregates]);
 
   const allTimePR = useMemo<{ pr: number; prSet: WorkoutSet | null }>(() => {
     let pr = 0;
@@ -129,6 +135,20 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
       tension: 0.25,
     });
 
+    if (showTrendline && sessionAggregates.length > 0) {
+      datasets.push({
+        label: '1RM Trendline',
+        data: trendlineData,
+        borderColor: '#13c2c2',
+        backgroundColor: '#13c2c2',
+        borderWidth: 2,
+        borderDash: [5, 4],
+        pointRadius: 0,
+        pointHoverRadius: 4,
+        tension: 0,
+      });
+    }
+
     datasets.push({
       label: 'Heaviest Weight (kg)',
       data: sessionAggregates.map((s) => s.maxWeight),
@@ -145,7 +165,7 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
       labels,
       datasets,
     };
-  }, [sessionAggregates, showConfidenceBand]);
+  }, [sessionAggregates, trendlineData, showConfidenceBand, showTrendline]);
 
   const options = {
     responsive: true,
@@ -232,7 +252,15 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
           />
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+          <Space size="small">
+            <Switch
+              size="small"
+              checked={showTrendline}
+              onChange={setShowTrendline}
+            />
+            <Text type="secondary" style={{ fontSize: 12 }}>Trendline</Text>
+          </Space>
           <Space size="small">
             <Switch
               size="small"

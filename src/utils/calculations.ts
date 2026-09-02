@@ -406,3 +406,36 @@ export function calculatePersonalRecordsTimeline(sets: WorkoutSet[]): PersonalRe
 
   return prs.sort((a, b) => b.dateTime.getTime() - a.dateTime.getTime());
 }
+
+/**
+ * Calculates a linear regression trendline for a series of numeric values (e.g. 1RM across sessions)
+ */
+export function calculateLinearRegressionTrendline(values: number[]): number[] {
+  const n = values.length;
+  if (n === 0) return [];
+  if (n === 1) return [values[0]];
+
+  let sumX = 0;
+  let sumY = 0;
+  let sumXY = 0;
+  let sumXX = 0;
+
+  for (let i = 0; i < n; i++) {
+    const x = i;
+    const y = values[i];
+    sumX += x;
+    sumY += y;
+    sumXY += x * y;
+    sumXX += x * x;
+  }
+
+  const denominator = n * sumXX - sumX * sumX;
+  if (denominator === 0) {
+    return [...values];
+  }
+
+  const slope = (n * sumXY - sumX * sumY) / denominator;
+  const intercept = (sumY - slope * sumX) / n;
+
+  return values.map((_, i) => Number((slope * i + intercept).toFixed(1)));
+}
