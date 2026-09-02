@@ -78,6 +78,8 @@ export interface ExerciseStats {
   totalVolumeKg: number;
   maxWeightKg: number;
   maxEstimated1RM: number;
+  maxRepsPerSet: number;
+  isBodyweight: boolean;
   firstDate: string;
   lastDate: string;
 }

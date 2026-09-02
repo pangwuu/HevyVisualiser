@@ -91,27 +91,47 @@ export const ExercisesPage: React.FC = () => {
       title: 'Best Weight',
       dataIndex: 'maxWeightKg',
       key: 'maxWeightKg',
-      render: (w: number) => (w > 0 ? <span style={{ color: '#52c41a', fontWeight: 600 }}>{w} kg</span> : '--'),
+      render: (_: any, record: ExerciseStats) =>
+        record.maxWeightKg > 0 ? (
+          <span style={{ color: '#52c41a', fontWeight: 600 }}>{record.maxWeightKg} kg</span>
+        ) : (
+          <Tag color="default" style={{ fontSize: 11, backgroundColor: '#1f1f1f', borderColor: '#333', color: '#8c8c8c' }}>
+            Bodyweight
+          </Tag>
+        ),
       sorter: (a: ExerciseStats, b: ExerciseStats) => a.maxWeightKg - b.maxWeightKg,
-      width: 120,
+      width: 125,
     },
     {
-      title: 'Max Est. 1RM',
-      dataIndex: 'maxEstimated1RM',
-      key: 'maxEstimated1RM',
-      render: (rm: number) => (rm > 0 ? <span style={{ color: '#1890ff', fontWeight: 600 }}>{rm} kg</span> : '--'),
-      sorter: (a: ExerciseStats, b: ExerciseStats) => a.maxEstimated1RM - b.maxEstimated1RM,
-      width: 130,
+      title: 'Best Performance',
+      key: 'bestPerformance',
+      render: (_: any, record: ExerciseStats) =>
+        record.maxWeightKg > 0 ? (
+          <span style={{ color: '#1890ff', fontWeight: 600 }}>
+            {record.maxEstimated1RM} kg <Text type="secondary" style={{ fontSize: 11 }}>(1RM)</Text>
+          </span>
+        ) : (
+          <span style={{ color: '#1890ff', fontWeight: 600 }}>
+            {record.maxRepsPerSet} reps <Text type="secondary" style={{ fontSize: 11 }}>(Max Set)</Text>
+          </span>
+        ),
+      sorter: (a: ExerciseStats, b: ExerciseStats) =>
+        a.maxWeightKg > 0 ? a.maxEstimated1RM - b.maxEstimated1RM : a.maxRepsPerSet - b.maxRepsPerSet,
+      width: 155,
     },
     {
       title: 'Total Volume',
       dataIndex: 'totalVolumeKg',
       key: 'totalVolumeKg',
-      render: (vol: number) => (
-        <span style={{ color: '#fa8c16' }}>{(vol / 1000).toFixed(1)} t</span>
-      ),
-      sorter: (a: ExerciseStats, b: ExerciseStats) => a.totalVolumeKg - b.totalVolumeKg,
-      width: 130,
+      render: (_: any, record: ExerciseStats) =>
+        record.maxWeightKg > 0 ? (
+          <span style={{ color: '#fa8c16' }}>{(record.totalVolumeKg / 1000).toFixed(1)} t</span>
+        ) : (
+          <span style={{ color: '#fa8c16' }}>{record.totalReps.toLocaleString()} reps</span>
+        ),
+      sorter: (a: ExerciseStats, b: ExerciseStats) =>
+        a.maxWeightKg > 0 ? a.totalVolumeKg - b.totalVolumeKg : a.totalReps - b.totalReps,
+      width: 135,
     },
     {
       title: 'Action',

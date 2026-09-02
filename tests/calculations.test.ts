@@ -182,6 +182,51 @@ describe('Calculations & Analytics', () => {
       expect(bench?.totalSets).toBe(2);
       expect(bench?.maxWeightKg).toBe(80);
       expect(bench?.maxEstimated1RM).toBe(96);
+      expect(bench?.maxRepsPerSet).toBe(10);
+      expect(bench?.isBodyweight).toBe(false);
+    });
+
+    it('correctly identifies bodyweight exercises with maxRepsPerSet and isBodyweight true', () => {
+      const bodyweightSets: WorkoutSet[] = [
+        {
+          id: 'bw1',
+          workoutTitle: 'Core Day',
+          startTime: dayjs('2026-08-30T10:00:00.000Z').toDate(),
+          endTime: dayjs('2026-08-30T11:00:00.000Z').toDate(),
+          workoutDate: '2026-08-30',
+          exerciseTitle: 'Leg Raise Parallel Bars',
+          setIndex: 1,
+          setType: 'normal',
+          reps: 15,
+          volumeKg: 0,
+          muscleGroups: ['Core'],
+          description: '',
+          exerciseNotes: '',
+        },
+        {
+          id: 'bw2',
+          workoutTitle: 'Core Day',
+          startTime: dayjs('2026-08-30T10:00:00.000Z').toDate(),
+          endTime: dayjs('2026-08-30T11:00:00.000Z').toDate(),
+          workoutDate: '2026-08-30',
+          exerciseTitle: 'Leg Raise Parallel Bars',
+          setIndex: 2,
+          setType: 'normal',
+          reps: 20,
+          volumeKg: 0,
+          muscleGroups: ['Core'],
+          description: '',
+          exerciseNotes: '',
+        },
+      ];
+
+      const stats = calculateExerciseStats(bodyweightSets);
+      const legRaise = stats.find((e) => e.exerciseTitle === 'Leg Raise Parallel Bars');
+      expect(legRaise).toBeDefined();
+      expect(legRaise?.isBodyweight).toBe(true);
+      expect(legRaise?.maxWeightKg).toBe(0);
+      expect(legRaise?.maxRepsPerSet).toBe(20);
+      expect(legRaise?.totalReps).toBe(35);
     });
   });
 

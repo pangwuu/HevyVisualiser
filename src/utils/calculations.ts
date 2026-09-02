@@ -294,6 +294,7 @@ export function calculateExerciseStats(filteredSets: WorkoutSet[]): ExerciseStat
     totalVolumeKg: number;
     maxWeightKg: number;
     maxEstimated1RM: number;
+    maxRepsPerSet: number;
     dates: string[];
   }>();
 
@@ -307,6 +308,7 @@ export function calculateExerciseStats(filteredSets: WorkoutSet[]): ExerciseStat
         totalVolumeKg: 0,
         maxWeightKg: 0,
         maxEstimated1RM: 0,
+        maxRepsPerSet: 0,
         dates: [],
       });
     }
@@ -314,10 +316,14 @@ export function calculateExerciseStats(filteredSets: WorkoutSet[]): ExerciseStat
     const entry = map.get(s.exerciseTitle)!;
     entry.sessionDates.add(s.workoutDate);
     entry.totalSets += 1;
-    entry.totalReps += s.reps || 0;
+    const reps = s.reps || 0;
+    entry.totalReps += reps;
     entry.totalVolumeKg += s.volumeKg;
     entry.dates.push(s.workoutDate);
 
+    if (reps > entry.maxRepsPerSet) {
+      entry.maxRepsPerSet = reps;
+    }
     if (s.weightKg && s.weightKg > entry.maxWeightKg) {
       entry.maxWeightKg = s.weightKg;
     }
@@ -338,6 +344,8 @@ export function calculateExerciseStats(filteredSets: WorkoutSet[]): ExerciseStat
       totalVolumeKg: Math.round(val.totalVolumeKg),
       maxWeightKg: val.maxWeightKg,
       maxEstimated1RM: val.maxEstimated1RM,
+      maxRepsPerSet: val.maxRepsPerSet,
+      isBodyweight: val.maxWeightKg === 0,
       firstDate: val.dates[0] || '',
       lastDate: val.dates[val.dates.length - 1] || '',
     });
