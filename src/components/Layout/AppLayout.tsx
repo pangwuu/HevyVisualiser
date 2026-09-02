@@ -178,7 +178,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         </Header>
 
         {/* Page Content */}
-        <Content style={{ margin: '20px 20px 0', minHeight: 280 }}>
+        <Content className="app-content-wrapper">
           <div style={{ maxWidth: 1400, margin: '0 auto' }}>
             {children}
           </div>

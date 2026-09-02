@@ -125,14 +125,14 @@ export const SettingsPage: React.FC = () => {
     },
     {
       title: 'Export CSV',
-      sub: 'Generate zip file',
-      description: 'Tap "Export Data" and confirm. Hevy will generate and export a ZIP archive containing your workout_data.csv and measurement_data.csv.',
+      sub: 'Generate exports',
+      description: 'Tap "Export Data" and confirm. Hevy will export a CSV file containing your workout_data.csv or measurement_data.csv. If you want to upload both you\'ll need to do this step twice seperately for workout and measurement data.',
       icon: <UploadCloud size={16} />,
     },
     {
       title: 'Upload Here',
       sub: 'Drop or click',
-      description: 'Unzip the downloaded file and drop workout_data.csv and measurement_data.csv into the upload boxes above!',
+      description: 'Drop workout_data.csv and measurement_data.csv into the upload boxes above!',
       icon: <ShieldCheck size={16} />,
     },
   ];
@@ -146,7 +146,7 @@ export const SettingsPage: React.FC = () => {
           Data Settings & CSV Import
         </Title>
         <Text type="secondary">
-          Upload your personal Hevy CSV export files, check storage status, or restore the default sample dataset.
+          Upload your personal Hevy CSV export files, check storage status, or restore the default sample dataset. All your personal data is stored locally on the browser.
         </Text>
       </div>
 
@@ -178,7 +178,7 @@ export const SettingsPage: React.FC = () => {
                 Click or drag workout_data.csv here
               </p>
               <p className="ant-upload-hint" style={{ color: '#8c8c8c', fontSize: 12 }}>
-                Stored 100% locally in your browser (LocalStorage). Instant reload across all charts.
+                See your progress with your workouts, personal stats, and 1RM predictions.
               </p>
             </Dragger>
           </Card>
@@ -210,7 +210,7 @@ export const SettingsPage: React.FC = () => {
                 Click or drag measurement_data.csv here
               </p>
               <p className="ant-upload-hint" style={{ color: '#8c8c8c', fontSize: 12 }}>
-                Enables scale weight & circumference progress tracking over time.
+                See your progress with body measurements.
               </p>
             </Dragger>
           </Card>
@@ -369,7 +369,7 @@ export const SettingsPage: React.FC = () => {
 
           <Popconfirm
             title="Clear All Stored Data?"
-            description="This will remove stored CSVs from localStorage."
+            description="This will remove all workouts and body measurements. This action is irreversible, you will need to upload again."
             onConfirm={() => {
               resetDefaultData();
               message.success('Cleared stored data from browser');
@@ -379,7 +379,7 @@ export const SettingsPage: React.FC = () => {
             okButtonProps={{ danger: true }}
           >
             <Button danger icon={<DeleteOutlined />}>
-              Clear Browser LocalStorage
+              Clear all stored data
             </Button>
           </Popconfirm>
         </Space>

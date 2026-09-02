@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 import { Tooltip, Card, Typography, Segmented } from 'antd';
-import { FireFilled } from '@ant-design/icons';
+import { Flame } from 'lucide-react';
 import { WorkoutSession } from '../../types';
 
 const { Text } = Typography;
@@ -88,14 +88,14 @@ export const HeatmapCalendar: React.FC<HeatmapCalendarProps> = ({
   return (
     <Card
       title={
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <FireFilled style={{ color: '#52c41a' }} />
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 16, fontWeight: 700, color: '#fff' }}>
+            <Flame size={18} color="#52c41a" />
             {title}
           </span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <Text type="secondary" style={{ fontSize: 13 }}>
-              {activeDaysCount} active days in {weeks.length} weeks
+          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
+            <Text type="secondary" style={{ fontSize: 12 }}>
+              {activeDaysCount} active days ({weeks.length} weeks)
             </Text>
             <Segmented
               size="small"
@@ -103,15 +103,16 @@ export const HeatmapCalendar: React.FC<HeatmapCalendarProps> = ({
               onChange={(val) => setRangeMode(val as '1y' | 'all')}
               options={[
                 { label: 'Past Year', value: '1y' },
-                { label: 'All History', value: 'all' },
+                { label: 'All Time', value: 'all' },
               ]}
+              style={{ backgroundColor: '#1f1f1f' }}
             />
           </div>
         </div>
       }
       style={{ backgroundColor: '#141414', borderColor: '#303030' }}
     >
-      <div style={{ overflowX: 'auto', paddingBottom: 8 }}>
+      <div className="mobile-touch-scroll" style={{ paddingBottom: 6 }}>
         <div style={{ display: 'flex', gap: 4, minWidth: weeks.length * 15 + 40 }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 3, marginRight: 6, paddingTop: 20 }}>
             {dayLabels.map((lbl, idx) => (

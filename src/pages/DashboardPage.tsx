@@ -4,14 +4,13 @@ import {
   FireOutlined,
   ClockCircleOutlined,
   ThunderboltOutlined,
-  FieldTimeOutlined,
   TrophyOutlined,
   AppstoreOutlined,
   HeartFilled,
   RightOutlined,
   CloudUploadOutlined,
 } from '@ant-design/icons';
-import { Dumbbell, AlertTriangle } from 'lucide-react';
+import { Dumbbell, AlertTriangle, Clock } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useWorkoutData } from '../hooks/useWorkoutData';
@@ -241,9 +240,9 @@ export const DashboardPage: React.FC = () => {
 
       <Card
         title={
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <FieldTimeOutlined style={{ color: '#1890ff' }} />
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 16, fontWeight: 700, color: '#fff' }}>
+              <Clock size={18} color="#1890ff" />
               Recent Workout Sessions
             </span>
             <Link to="/workouts">

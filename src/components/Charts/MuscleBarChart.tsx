@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Card, Segmented, Row, Col, Progress, Typography } from 'antd';
-import { BarChartOutlined } from '@ant-design/icons';
+import { BarChart3 } from 'lucide-react';
 import './chartSetup';
 import { MuscleGroup } from '../../types';
 
@@ -84,9 +84,9 @@ export const MuscleBarChart: React.FC<MuscleBarChartProps> = ({
   return (
     <Card
       title={
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <BarChartOutlined style={{ color: '#fa8c16' }} />
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 16, fontWeight: 700, color: '#fff' }}>
+            <BarChart3 size={18} color="#fa8c16" />
             {title}
           </span>
           <Segmented
@@ -97,6 +97,7 @@ export const MuscleBarChart: React.FC<MuscleBarChartProps> = ({
               { label: 'Set Count', value: 'sets' },
               { label: 'Volume (kg)', value: 'volume' },
             ]}
+            style={{ backgroundColor: '#1f1f1f' }}
           />
         </div>
       }

@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Card, Select, Switch, Space, Typography, Row, Col, Statistic, Tag, Empty } from 'antd';
-import { TrophyOutlined, LineChartOutlined, ThunderboltFilled } from '@ant-design/icons';
+import { TrendingUp, Trophy, Zap, Layers, Weight } from 'lucide-react';
 import dayjs from 'dayjs';
 import './chartSetup';
 import { WorkoutSet, ExerciseStats } from '../../types';
@@ -175,7 +175,7 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
     scales: {
       x: {
         grid: { color: '#262626' },
-        ticks: { color: '#8c8c8c', maxTicksLimit: 10 },
+        ticks: { color: '#8c8c8c', maxTicksLimit: 8 },
       },
       y: {
         grid: { color: '#262626' },
@@ -192,14 +192,35 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
   return (
     <Card
       title={
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <LineChartOutlined style={{ color: '#1890ff' }} />
-            Exercise Progression (Estimated 1RM)
-          </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 16, fontWeight: 700, color: '#fff' }}>
+          <TrendingUp size={18} color="#1890ff" />
+          <span>Exercise Strength Progression (Estimated 1RM)</span>
+        </div>
+      }
+      style={{ backgroundColor: '#141414', borderColor: '#303030' }}
+    >
+      {/* Responsive Exercise Selector & Controls Toolbar */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: 12,
+          padding: 12,
+          backgroundColor: '#1f1f1f',
+          borderRadius: 8,
+          border: '1px solid #2a2a2a',
+          marginBottom: 16,
+        }}
+      >
+        <div style={{ flex: '1 1 260px', minWidth: 220 }}>
+          <Text type="secondary" style={{ fontSize: 11, display: 'block', marginBottom: 4 }}>
+            SELECT EXERCISE:
+          </Text>
           <Select
             showSearch
-            style={{ width: 280 }}
+            style={{ width: '100%' }}
             value={selectedExercise}
             onChange={(val) => setSelectedExercise(val)}
             placeholder="Select an exercise"
@@ -210,9 +231,8 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
             }))}
           />
         </div>
-      }
-      extra={
-        <Space size="middle" wrap>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
           <Space size="small">
             <Switch
               size="small"
@@ -229,69 +249,70 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
             />
             <Text type="secondary" style={{ fontSize: 12 }}>Detailed Stats</Text>
           </Space>
-        </Space>
-      }
-      style={{ backgroundColor: '#141414', borderColor: '#303030' }}
-    >
+        </div>
+      </div>
+
       {selectedExercise && currentStats ? (
         <>
-          <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
+          <Row gutter={[12, 12]} style={{ marginBottom: 16 }}>
             <Col xs={12} sm={6}>
-              <Card size="small" style={{ backgroundColor: '#1f1f1f', borderColor: '#303030' }}>
+              <Card size="small" style={{ backgroundColor: '#1a1a1a', borderColor: '#303030' }}>
                 <Statistic
-                  title={<span style={{ color: '#8c8c8c', fontSize: 12 }}>All-Time Est 1RM PR</span>}
+                  title={<span style={{ color: '#8c8c8c', fontSize: 11 }}>All-Time Est 1RM PR</span>}
                   value={allTimePR.pr}
                   suffix="kg"
-                  valueStyle={{ color: '#52c41a', fontSize: 20, fontWeight: 700 }}
-                  prefix={<TrophyOutlined />}
+                  valueStyle={{ color: '#52c41a', fontSize: 18, fontWeight: 700 }}
+                  prefix={<Trophy size={15} color="#52c41a" />}
                 />
                 {allTimePR.prSet && (
-                  <Text type="secondary" style={{ fontSize: 11 }}>
-                    {allTimePR.prSet.weightKg}kg × {allTimePR.prSet.reps} reps on {allTimePR.prSet.workoutDate}
+                  <Text type="secondary" style={{ fontSize: 10, display: 'block', marginTop: 2 }}>
+                    {allTimePR.prSet.weightKg}kg × {allTimePR.prSet.reps} reps
                   </Text>
                 )}
               </Card>
             </Col>
             <Col xs={12} sm={6}>
-              <Card size="small" style={{ backgroundColor: '#1f1f1f', borderColor: '#303030' }}>
+              <Card size="small" style={{ backgroundColor: '#1a1a1a', borderColor: '#303030' }}>
                 <Statistic
-                  title={<span style={{ color: '#8c8c8c', fontSize: 12 }}>Latest Est 1RM</span>}
+                  title={<span style={{ color: '#8c8c8c', fontSize: 11 }}>Latest Est 1RM</span>}
                   value={latestSession?.max1RM || 0}
                   suffix="kg"
-                  valueStyle={{ color: '#1890ff', fontSize: 20, fontWeight: 700 }}
-                  prefix={<ThunderboltFilled />}
+                  valueStyle={{ color: '#1890ff', fontSize: 18, fontWeight: 700 }}
+                  prefix={<Zap size={15} color="#1890ff" />}
                 />
                 {latestSession && (
-                  <Text type="secondary" style={{ fontSize: 11 }}>
+                  <Text type="secondary" style={{ fontSize: 10, display: 'block', marginTop: 2 }}>
                     {latestSession.dateStr}
                   </Text>
                 )}
               </Card>
             </Col>
             <Col xs={12} sm={6}>
-              <Card size="small" style={{ backgroundColor: '#1f1f1f', borderColor: '#303030' }}>
+              <Card size="small" style={{ backgroundColor: '#1a1a1a', borderColor: '#303030' }}>
                 <Statistic
-                  title={<span style={{ color: '#8c8c8c', fontSize: 12 }}>Total Sets Logged</span>}
+                  title={<span style={{ color: '#8c8c8c', fontSize: 11 }}>Total Sets Logged</span>}
                   value={currentStats.totalSets}
                   suffix="sets"
-                  valueStyle={{ color: '#d9d9d9', fontSize: 20 }}
+                  valueStyle={{ color: '#d9d9d9', fontSize: 18 }}
+                  prefix={<Layers size={15} color="#d9d9d9" />}
                 />
-                <Text type="secondary" style={{ fontSize: 11 }}>
-                  across {currentStats.totalSessions} sessions
+                <Text type="secondary" style={{ fontSize: 10, display: 'block', marginTop: 2 }}>
+                  across {currentStats.totalSessions} workouts
                 </Text>
               </Card>
             </Col>
             <Col xs={12} sm={6}>
-              <Card size="small" style={{ backgroundColor: '#1f1f1f', borderColor: '#303030' }}>
+              <Card size="small" style={{ backgroundColor: '#1a1a1a', borderColor: '#303030' }}>
                 <Statistic
-                  title={<span style={{ color: '#8c8c8c', fontSize: 12 }}>Total Volume</span>}
+                  title={<span style={{ color: '#8c8c8c', fontSize: 11 }}>Total Volume</span>}
                   value={(currentStats.totalVolumeKg / 1000).toFixed(1)}
-                  suffix="tonnes"
-                  valueStyle={{ color: '#fa8c16', fontSize: 20 }}
+                  suffix="t"
+                  valueStyle={{ color: '#fa8c16', fontSize: 18 }}
+                  prefix={<Weight size={15} color="#fa8c16" />}
                 />
-                <div style={{ marginTop: 2 }}>
+                <div style={{ marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {currentStats.muscleGroups.map((mg) => (
-                    <Tag key={mg} color="blue" style={{ fontSize: 10, marginRight: 4 }}>{mg}</Tag>
+                    <Tag key={mg} color="blue" style={{ fontSize: 9, marginRight: 2, padding: '0 4px' }}>{mg}</Tag>
                   ))}
                 </div>
               </Card>

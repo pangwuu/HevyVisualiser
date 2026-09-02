@@ -30,9 +30,9 @@ export const ExercisesPage: React.FC = () => {
       title: 'Rank',
       key: 'rank',
       render: (_: any, __: any, index: number) => {
-        if (index === 0) return <span style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#faad14', fontWeight: 700 }}><IconRosetteNumber1 size={20} color="#faad14" /> 1</span>;
-        if (index === 1) return <span style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#d9d9d9', fontWeight: 700 }}><IconRosetteNumber2 size={20} color="#d9d9d9" /> 2</span>;
-        if (index === 2) return <span style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#d48806', fontWeight: 700 }}><IconRosetteNumber3 size={20} color="#d48806" /> 3</span>;
+        if (index === 0) return <span style={{ display: 'flex', alignItems: 'center', color: '#faad14', fontWeight: 700, paddingLeft: 8 }}><IconRosetteNumber1 size={25} color="#faad14" /></span>;
+        if (index === 1) return <span style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#d9d9d9', fontWeight: 700, paddingLeft: 8  }}><IconRosetteNumber2 size={25} color="#d9d9d9" /></span>;
+        if (index === 2) return <span style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#d48806', fontWeight: 700, paddingLeft: 8  }}><IconRosetteNumber3 size={25} color="#d48806" /></span>;
         return <span style={{ color: '#8c8c8c', fontWeight: 600, paddingLeft: 8 }}>#{index + 1}</span>;
       },
       width: 90,
@@ -158,39 +158,50 @@ export const ExercisesPage: React.FC = () => {
 
       <Card
         title={
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-            <span style={{ color: '#fff' }}>
-              All Logged Exercises ({filteredExerciseStats.length})
-            </span>
-            <Space wrap>
-              <Select
-                value={muscleFilter}
-                onChange={setMuscleFilter}
-                style={{ width: 150 }}
-                options={[
-                  { value: 'all', label: 'All Muscle Groups' },
-                  ...MUSCLE_GROUPS.map((mg) => ({ value: mg, label: mg })),
-                ]}
-              />
-              <Input
-                placeholder="Search exercise..."
-                prefix={<SearchOutlined style={{ color: '#8c8c8c' }} />}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{ width: 220 }}
-                allowClear
-              />
-            </Space>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 16, fontWeight: 700, color: '#fff' }}>
+            <BicepsFlexed size={18} color="#1890ff" />
+            <span>All Logged Exercises ({filteredExerciseStats.length})</span>
           </div>
         }
         style={{ backgroundColor: '#141414', borderColor: '#303030' }}
       >
+        {/* Responsive Table Search & Filter Toolbar */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: 12,
+            marginBottom: 16,
+          }}
+        >
+          <Input
+            placeholder="Search exercise by name..."
+            prefix={<SearchOutlined style={{ color: '#8c8c8c' }} />}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{ flex: '1 1 240px', maxWidth: 360 }}
+            allowClear
+          />
+          <Select
+            value={muscleFilter}
+            onChange={setMuscleFilter}
+            style={{ minWidth: 180, flex: '1 1 180px', maxWidth: 260 }}
+            options={[
+              { value: 'all', label: 'All Muscle Groups' },
+              ...MUSCLE_GROUPS.map((mg) => ({ value: mg, label: mg })),
+            ]}
+          />
+        </div>
+
         <Table
           dataSource={filteredExerciseStats}
           columns={columns}
           rowKey="exerciseTitle"
           pagination={{ pageSize: 15, showSizeChanger: true, pageSizeOptions: ['15', '30', '50', '100'] }}
-          scroll={{ x: 900 }}
+          scroll={{ x: 780 }}
+          size="middle"
         />
       </Card>
     </div>

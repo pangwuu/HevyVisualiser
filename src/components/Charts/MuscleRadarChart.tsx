@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Radar } from 'react-chartjs-2';
 import { Card, Segmented, Typography } from 'antd';
-import { DotChartOutlined } from '@ant-design/icons';
+import { Target } from 'lucide-react';
 import './chartSetup';
 import { MuscleGroup } from '../../types';
 
@@ -87,9 +87,9 @@ export const MuscleRadarChart: React.FC<MuscleRadarChartProps> = ({
   return (
     <Card
       title={
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <DotChartOutlined style={{ color: '#1890ff' }} />
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 16, fontWeight: 700, color: '#fff' }}>
+            <Target size={18} color="#1890ff" />
             {title}
           </span>
           <Segmented
@@ -100,6 +100,7 @@ export const MuscleRadarChart: React.FC<MuscleRadarChartProps> = ({
               { label: 'Set Count', value: 'sets' },
               { label: 'Volume (kg)', value: 'volume' },
             ]}
+            style={{ backgroundColor: '#1f1f1f' }}
           />
         </div>
       }
