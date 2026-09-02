@@ -48,6 +48,10 @@ interface WorkoutDataContextType {
   workoutUploadTime: string | null;
   measurementUploadTime: string | null;
   isUsingDefault: boolean;
+  isUsingDefaultWorkout: boolean;
+  isUsingDefaultMeasurement: boolean;
+  hasCustomWorkout: boolean;
+  hasCustomMeasurement: boolean;
   uploadWorkout: (csvText: string) => void;
   uploadMeasurement: (csvText: string) => void;
   resetDefaultData: () => void;
@@ -157,6 +161,10 @@ export const WorkoutDataProvider: React.FC<{ children: React.ReactNode }> = ({ c
     workoutUploadTime: storageState.workoutUploadTime,
     measurementUploadTime: storageState.measurementUploadTime,
     isUsingDefault: storageState.isUsingDefault,
+    isUsingDefaultWorkout: storageState.isUsingDefaultWorkout,
+    isUsingDefaultMeasurement: storageState.isUsingDefaultMeasurement,
+    hasCustomWorkout: storageState.hasCustomWorkout,
+    hasCustomMeasurement: storageState.hasCustomMeasurement,
     uploadWorkout,
     uploadMeasurement,
     resetDefaultData,

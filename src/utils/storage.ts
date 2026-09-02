@@ -11,6 +11,10 @@ export interface StorageInfo {
   workoutUploadTime: string | null;
   measurementUploadTime: string | null;
   isUsingDefault: boolean;
+  isUsingDefaultWorkout: boolean;
+  isUsingDefaultMeasurement: boolean;
+  hasCustomWorkout: boolean;
+  hasCustomMeasurement: boolean;
 }
 
 export function loadSavedData(): StorageInfo {
@@ -23,12 +27,19 @@ export function loadSavedData(): StorageInfo {
     const workoutCsv = savedWorkout && savedWorkout.trim().length > 0 ? savedWorkout : DEFAULT_WORKOUT_CSV;
     const measurementCsv = savedMeasurement && savedMeasurement.trim().length > 0 ? savedMeasurement : DEFAULT_MEASUREMENT_CSV;
 
+    const hasCustomWorkout = Boolean(savedWorkout && savedWorkout.trim().length > 0);
+    const hasCustomMeasurement = Boolean(savedMeasurement && savedMeasurement.trim().length > 0);
+
     return {
       workoutCsv,
       measurementCsv,
       workoutUploadTime: workoutTime,
       measurementUploadTime: measurementTime,
-      isUsingDefault: !savedWorkout,
+      isUsingDefault: !hasCustomWorkout && !hasCustomMeasurement,
+      isUsingDefaultWorkout: !hasCustomWorkout,
+      isUsingDefaultMeasurement: !hasCustomMeasurement,
+      hasCustomWorkout,
+      hasCustomMeasurement,
     };
   } catch (err) {
     console.warn('Failed to read from localStorage, using default data:', err);
@@ -38,6 +49,10 @@ export function loadSavedData(): StorageInfo {
       workoutUploadTime: null,
       measurementUploadTime: null,
       isUsingDefault: true,
+      isUsingDefaultWorkout: true,
+      isUsingDefaultMeasurement: true,
+      hasCustomWorkout: false,
+      hasCustomMeasurement: false,
     };
   }
 }

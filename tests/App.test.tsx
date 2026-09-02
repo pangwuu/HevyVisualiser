@@ -8,7 +8,7 @@ describe('App Root Integration', () => {
     render(<App />);
     expect(screen.getAllByText(/HEVY/i).length).toBeGreaterThan(0);
     expect(screen.getByText(/STATS/i)).toBeInTheDocument();
-    expect(screen.getByText(/Hevy Data Dashboard/i)).toBeInTheDocument();
+    expect(screen.getByText(/Training Overview/i)).toBeInTheDocument();
   });
 
   it('renders navigation links', () => {
@@ -19,5 +19,11 @@ describe('App Root Integration', () => {
     expect(screen.getByText('Exercise Library')).toBeInTheDocument();
     expect(screen.getByText('Measurements')).toBeInTheDocument();
     expect(screen.getByText('Settings & Import')).toBeInTheDocument();
+  });
+
+  it('shows workout demo alert on dashboard by default', () => {
+    render(<App />);
+    expect(screen.getByText(/Viewing Sample Demo Workout Dataset/i)).toBeInTheDocument();
+    expect(screen.queryByText(/Viewing Sample Demo Measurement Dataset/i)).not.toBeInTheDocument();
   });
 });

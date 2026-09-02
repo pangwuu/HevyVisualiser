@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Layout, Menu, Typography, Button, Drawer, Tag, Space, Alert } from 'antd';
+import { Layout, Menu, Typography, Button, Drawer, Tag, Alert } from 'antd';
 import {
   DashboardOutlined,
   FireOutlined,
@@ -7,14 +7,13 @@ import {
   ThunderboltOutlined,
   AreaChartOutlined,
   SettingOutlined,
-  MenuOutlined,
   CloudUploadOutlined,
 } from '@ant-design/icons';
 import { Dumbbell, AlertTriangle } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useWorkoutData } from '../../hooks/useWorkoutData';
 
-const { Header, Sider, Content, Footer } = Layout;
+const { Sider, Content, Footer } = Layout;
 const { Text } = Typography;
 
 interface AppLayoutProps {
@@ -26,7 +25,14 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { allSessions, allSets, isUsingDefault } = useWorkoutData();
+  const {
+    allSessions,
+    allSets,
+    measurements,
+    isUsingDefault,
+    isUsingDefaultWorkout,
+    isUsingDefaultMeasurement,
+  } = useWorkoutData();
 
   const menuItems = [
     {
@@ -154,62 +160,21 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       </Drawer>
 
       <Layout style={{ backgroundColor: '#0f0f0f' }}>
-        {/* Top Header */}
-        <Header
-          style={{
-            padding: '0 20px',
-            backgroundColor: '#141414',
-            borderBottom: '1px solid #262626',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            height: 64,
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <Button
-              className="mobile-menu-btn"
-              type="text"
-              icon={<MenuOutlined style={{ color: '#fff', fontSize: 18 }} />}
-              onClick={() => setMobileDrawerOpen(true)}
-            />
-            <div
-              onClick={() => navigate('/')}
-              style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', userSelect: 'none' }}
-            >
-              <Dumbbell size={18} color="#1890ff" />
-              <span style={{ fontWeight: 700, fontSize: 16, color: '#fff' }}>
-                Hevy Data Dashboard
-              </span>
-            </div>
-          </div>
-
-          <Space size="middle">
-            <Button
-              type="primary"
-              size="middle"
-              icon={<CloudUploadOutlined />}
-              onClick={() => navigate('/settings')}
-            >
-              Import CSV
-            </Button>
-          </Space>
-        </Header>
 
         {/* Page Content */}
         <Content className="app-content-wrapper">
           <div style={{ maxWidth: 1400, margin: '0 auto' }}>
-            {/* Global Sample Demo Dataset Alert */}
-            {location.pathname !== '/settings' && isUsingDefault && (
+            {/* 1. Workout Alerts (Shown only on workout-related pages) */}
+            {location.pathname !== '/settings' && location.pathname !== '/measurements' && isUsingDefaultWorkout && (
               <Alert
                 message={
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
                     <div>
                       <strong style={{ color: '#faad14', fontSize: 14 }}>
-                        Viewing Sample Demo Dataset
+                        Viewing Sample Demo Workout Dataset
                       </strong>
                       <div style={{ color: '#d9d9d9', fontSize: 13, marginTop: 2 }}>
-                        You are currently viewing a demonstration dataset. Upload your personal Hevy CSV export to visualize your real workout statistics, 1RM progression, and muscle distribution.
+                        You are currently viewing a demonstration workout dataset. Upload your personal Hevy workout_data.csv to visualize your real workout statistics, 1RM progression, and muscle distribution.
                       </div>
                     </div>
                     <Button
@@ -218,7 +183,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                       onClick={() => navigate('/settings')}
                       style={{ backgroundColor: '#faad14', borderColor: '#d48806', color: '#000', fontWeight: 600 }}
                     >
-                      Upload Your CSV
+                      Upload Workout CSV
                     </Button>
                   </div>
                 }
@@ -230,14 +195,13 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
               />
             )}
 
-            {/* Global No Data Uploaded Alert */}
-            {location.pathname !== '/settings' && !isUsingDefault && allSets.length === 0 && (
+            {location.pathname !== '/settings' && location.pathname !== '/measurements' && !isUsingDefaultWorkout && allSets.length === 0 && (
               <Alert
                 message={
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
                     <div>
                       <strong style={{ color: '#ff4d4f', fontSize: 14 }}>
-                        No Data Uploaded
+                        No Workout Data Uploaded
                       </strong>
                       <div style={{ color: '#d9d9d9', fontSize: 13, marginTop: 2 }}>
                         No workout records found. Please upload your Hevy workout_data.csv to start visualizing your training data.
@@ -250,7 +214,68 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                       onClick={() => navigate('/settings')}
                       style={{ fontWeight: 600 }}
                     >
-                      Upload CSV Now
+                      Upload Workout CSV
+                    </Button>
+                  </div>
+                }
+                type="error"
+                showIcon
+                icon={<AlertTriangle size={18} color="#ff4d4f" />}
+                style={{ marginBottom: 16, backgroundColor: 'rgba(255, 77, 79, 0.1)', borderColor: 'rgba(255, 77, 79, 0.3)' }}
+              />
+            )}
+
+            {/* 2. Measurement Alerts (Shown only on the Measurements page) */}
+            {location.pathname === '/measurements' && isUsingDefaultMeasurement && (
+              <Alert
+                message={
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+                    <div>
+                      <strong style={{ color: '#faad14', fontSize: 14 }}>
+                        Viewing Sample Demo Measurement Dataset
+                      </strong>
+                      <div style={{ color: '#d9d9d9', fontSize: 13, marginTop: 2 }}>
+                        You are currently viewing demonstration body measurement data. Upload your personal Hevy measurement_data.csv to track your real weight changes and body circumferences.
+                      </div>
+                    </div>
+                    <Button
+                      type="primary"
+                      icon={<CloudUploadOutlined />}
+                      onClick={() => navigate('/settings')}
+                      style={{ backgroundColor: '#faad14', borderColor: '#d48806', color: '#000', fontWeight: 600 }}
+                    >
+                      Upload Measurement CSV
+                    </Button>
+                  </div>
+                }
+                type="warning"
+                showIcon
+                icon={<AlertTriangle size={18} color="#faad14" />}
+                style={{ marginBottom: 16, backgroundColor: 'rgba(250, 173, 20, 0.1)', borderColor: 'rgba(250, 173, 20, 0.3)' }}
+                closable
+              />
+            )}
+
+            {location.pathname === '/measurements' && !isUsingDefaultMeasurement && measurements.length === 0 && (
+              <Alert
+                message={
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+                    <div>
+                      <strong style={{ color: '#ff4d4f', fontSize: 14 }}>
+                        No Measurement Records Found
+                      </strong>
+                      <div style={{ color: '#d9d9d9', fontSize: 13, marginTop: 2 }}>
+                        No measurement records found. Please upload your Hevy measurement_data.csv to track your body weight and circumferences.
+                      </div>
+                    </div>
+                    <Button
+                      type="primary"
+                      danger
+                      icon={<CloudUploadOutlined />}
+                      onClick={() => navigate('/settings')}
+                      style={{ fontWeight: 600 }}
+                    >
+                      Upload Measurement CSV
                     </Button>
                   </div>
                 }
