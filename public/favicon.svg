@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#030712"/>
+    </linearGradient>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#2563eb" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Background rounded squircle with subtle border -->
+  <rect width="128" height="128" rx="28" fill="url(#bgGrad)"/>
+  <rect width="126" height="126" x="1" y="1" rx="27" fill="none" stroke="#374151" stroke-width="2" opacity="0.6"/>
+
+  <!-- Dumbbell Icon -->
+  <g filter="url(#glow)" transform="rotate(-45 64 64)">
+    <!-- Center knurled bar -->
+    <rect x="24" y="58" width="80" height="12" rx="6" fill="#e2e8f0"/>
+    
+    <!-- Outer weight plates (left) -->
+    <rect x="22" y="44" width="10" height="40" rx="4" fill="url(#blueGrad)"/>
+    <rect x="34" y="36" width="12" height="56" rx="5" fill="url(#blueGrad)"/>
+
+    <!-- Inner stop collars (left) -->
+    <rect x="48" y="52" width="6" height="24" rx="3" fill="#94a3b8"/>
+
+    <!-- Inner stop collars (right) -->
+    <rect x="74" y="52" width="6" height="24" rx="3" fill="#94a3b8"/>
+
+    <!-- Outer weight plates (right) -->
+    <rect x="82" y="36" width="12" height="56" rx="5" fill="url(#blueGrad)"/>
+    <rect x="96" y="44" width="10" height="40" rx="4" fill="url(#blueGrad)"/>
+  </g>
+</svg>
