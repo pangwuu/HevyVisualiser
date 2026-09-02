@@ -35,9 +35,29 @@ export const MusclesPage: React.FC = () => {
 
   const muscleCardStats = useMemo(() => {
     return MUSCLE_GROUPS.map((mg) => {
-      const targetSets = filteredSets.filter((s: WorkoutSet) => s.muscleGroups.includes(mg));
+      const targetSets = filteredSets.filter((s: WorkoutSet) => {
+        if (s.muscleWeights && Object.keys(s.muscleWeights).length > 0) {
+          return (s.muscleWeights[mg] || 0) > 0;
+        }
+        return s.muscleGroups.includes(mg);
+      });
+
       const workingSets = targetSets.filter((s: WorkoutSet) => s.setType !== 'warmup');
-      const totalVolume = workingSets.reduce((acc: number, s: WorkoutSet) => acc + ((s.weightKg || 0) * (s.reps || 0)), 0);
+
+      const effectiveTotalSets = targetSets.reduce((acc: number, s: WorkoutSet) => {
+        const weight = s.muscleWeights?.[mg] ?? (s.muscleGroups.includes(mg) ? 1.0 : 0);
+        return acc + weight;
+      }, 0);
+
+      const effectiveWorkingSets = workingSets.reduce((acc: number, s: WorkoutSet) => {
+        const weight = s.muscleWeights?.[mg] ?? (s.muscleGroups.includes(mg) ? 1.0 : 0);
+        return acc + weight;
+      }, 0);
+
+      const effectiveTotalVolume = workingSets.reduce((acc: number, s: WorkoutSet) => {
+        const weight = s.muscleWeights?.[mg] ?? (s.muscleGroups.includes(mg) ? 1.0 : 0);
+        return acc + ((s.weightKg || 0) * (s.reps || 0) * weight);
+      }, 0);
 
       const exerciseCounts: Record<string, number> = {};
       targetSets.forEach((s: WorkoutSet) => {
@@ -51,9 +71,9 @@ export const MusclesPage: React.FC = () => {
 
       return {
         muscleGroup: mg,
-        totalSets: targetSets.length,
-        workingSets: workingSets.length,
-        totalVolumeKg: Math.round(totalVolume),
+        totalSets: Math.round(effectiveTotalSets),
+        workingSets: Math.round(effectiveWorkingSets),
+        totalVolumeKg: Math.round(effectiveTotalVolume),
         topExercises,
         color: MUSCLE_COLORS[mg],
         icon: MUSCLE_ICONS[mg],

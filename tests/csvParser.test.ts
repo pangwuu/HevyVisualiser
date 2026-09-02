@@ -62,6 +62,9 @@ describe('CSV Parser', () => {
       expect(sets[0].volumeKg).toBe(120);
       expect(sets[0].muscleGroups).toContain('Chest');
       expect(sets[0].muscleGroups).toContain('Arms');
+      expect(sets[0].muscleWeights?.Chest).toBe(1.0);
+      expect(sets[0].muscleWeights?.Arms).toBe(0.5);
+      expect(sets[0].muscleWeights?.Shoulders).toBe(0.5);
 
       expect(sets[1].setType).toBe('normal');
       expect(sets[1].weightKg).toBe(50);

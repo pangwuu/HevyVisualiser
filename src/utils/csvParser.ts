@@ -2,7 +2,7 @@ import Papa from 'papaparse';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { WorkoutSet, WorkoutSession, MeasurementRecord, SetType } from '../types';
-import { getMuscleGroupsForExercise } from '../data/exerciseMapping';
+import { getMuscleGroupsForExercise, getMuscleWeightsForExercise } from '../data/exerciseMapping';
 
 dayjs.extend(customParseFormat);
 
@@ -71,6 +71,7 @@ export function parseWorkoutCsv(csvString: string): WorkoutSet[] {
     const volumeKg = (weightKg && reps && weightKg > 0 && reps > 0) ? weightKg * reps : 0;
     const estimated1RM = calculateEpley1RM(weightKg, reps);
     const muscleGroups = getMuscleGroupsForExercise(exerciseTitle);
+    const muscleWeights = getMuscleWeightsForExercise(exerciseTitle);
 
     sets.push({
       id: `set-${idx}-${startDay.toISOString()}`,
@@ -90,6 +91,7 @@ export function parseWorkoutCsv(csvString: string): WorkoutSet[] {
       durationSeconds: isNaN(durationSeconds as number) ? undefined : durationSeconds,
       rpe: isNaN(rpe as number) ? undefined : rpe,
       muscleGroups,
+      muscleWeights,
       volumeKg,
       estimated1RM,
     });

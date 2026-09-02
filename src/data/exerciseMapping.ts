@@ -2,240 +2,287 @@ export type MuscleGroup = 'Back' | 'Legs' | 'Chest' | 'Arms' | 'Shoulders' | 'Co
 
 export const MUSCLE_GROUPS: MuscleGroup[] = ['Back', 'Legs', 'Chest', 'Arms', 'Shoulders', 'Core'];
 
+export type MuscleWeightMap = Partial<Record<MuscleGroup, number>>;
+
 /**
- * Mapping of Hevy exercise names to muscle groups (including compound exercises
- * that target multiple muscle groups).
- * Includes standard Hevy exercises scraped from https://www.hevyapp.com/exercises/
- * and all exercises from user workout data.
+ * Biomechanical muscle contribution weights:
+ * - Primary Target: 1.0 (100%)
+ * - Secondary Synergist: 0.5 (50%)
+ * - Tertiary / Stabilizer: 0.2 - 0.4 (20% - 40%)
+ * - Pure Isolation: 1.0 to target muscle
  */
-export const EXERCISE_MUSCLE_MAPPING: Record<string, MuscleGroup[]> = {
-  'Arnold Press (Dumbbell)': ['Shoulders', 'Arms'],
-  'Around The World': ['Chest', 'Shoulders'],
-  'Back Extension (Weighted Hyperextension)': ['Back', 'Legs'],
-  'Behind the Back Bicep Wrist Curl (Barbell)': ['Arms'],
-  'Bench Press (Barbell)': ['Chest', 'Arms', 'Shoulders'],
-  'Bench Press (Dumbbell)': ['Chest', 'Arms', 'Shoulders'],
-  'Bench Press (Smith Machine)': ['Chest', 'Arms', 'Shoulders'],
-  'Bench Press - Close Grip (Barbell)': ['Arms', 'Chest', 'Shoulders'],
-  'Bench Press - Wide Grip (Barbell)': ['Chest', 'Shoulders'],
-  'Bent over fly': ['Shoulders', 'Back'],
-  'Bent Over Row (Barbell)': ['Back', 'Arms', 'Core'],
-  'Bicep Curl (Barbell)': ['Arms'],
-  'Bicep Curl (Cable)': ['Arms'],
-  'Bicep Curl (Dumbbell)': ['Arms'],
-  'Bulgarian Split Squat': ['Legs', 'Core'],
-  'Cable Crunch': ['Core'],
-  'Calf Press (Machine)': ['Legs'],
-  'Chest Dip': ['Chest', 'Arms', 'Shoulders'],
-  'Chest Dip (Assisted)': ['Chest', 'Arms', 'Shoulders'],
-  'Chest Dip (Weighted)': ['Chest', 'Arms', 'Shoulders'],
-  'Chest Fly (Machine)': ['Chest'],
-  'Chest Press (Machine)': ['Chest', 'Arms', 'Shoulders'],
-  'Chest Supported Incline Row (Dumbbell)': ['Back', 'Arms'],
-  'Chest-Supported Incline Row (dumbbell)': ['Back', 'Arms'],
-  'Chin Up': ['Back', 'Arms'],
-  'Clean Pull': ['Back', 'Legs'],
-  'Clean and Jerk': ['Legs', 'Back', 'Shoulders', 'Arms'],
-  'Climbing': ['Back', 'Arms', 'Core'],
-  'Concentration Curl': ['Arms'],
-  'Dead Hang': ['Back', 'Arms'],
-  'Deadlift (Band)': ['Back', 'Legs', 'Core'],
-  'Deadlift (Barbell)': ['Back', 'Legs', 'Core'],
-  'Deadlift (Dumbbell)': ['Back', 'Legs', 'Core'],
-  'Deadlift (Trap bar)': ['Legs', 'Back', 'Core'],
-  'Decline Bench Press (Dumbbell)': ['Chest', 'Arms'],
-  'Decline Bench Press (Machine)': ['Chest', 'Arms'],
-  'Decline Crunch': ['Core'],
-  'Decline Crunch (Weighted)': ['Core'],
-  'Decline Push Up': ['Chest', 'Shoulders', 'Arms', 'Core'],
-  'Diamond Push Up': ['Arms', 'Chest'],
-  'Dumbbell Row': ['Back', 'Arms'],
-  'Dumbbell Skullcrusher': ['Arms'],
-  'Face Pull': ['Shoulders', 'Back'],
-  'Farmer\'s Walk': ['Arms', 'Back', 'Core'],
-  'Fire Hydrants': ['Legs'],
-  'Floor Press (Barbell)': ['Chest', 'Arms', 'Shoulders'],
-  'Flutter Kicks': ['Core'],
-  'Frog Jumps': ['Legs'],
-  'Front Lever Raise': ['Core', 'Back'],
-  'Front Squat': ['Legs', 'Core', 'Back'],
-  'Glute Bridge': ['Legs'],
-  'Glute Ham Raise': ['Legs', 'Back'],
-  'Glute Kickback (Machine)': ['Legs'],
-  'Glute Kickback on Floor': ['Legs'],
-  'Goblet Squat': ['Legs', 'Core'],
-  'Good Morning (Barbell)': ['Legs', 'Back', 'Core'],
-  'Hack Squat': ['Legs'],
-  'Hack Squat (Machine)': ['Legs'],
-  'Hammer Curl (Band)': ['Arms'],
-  'Hammer Curl (Cable)': ['Arms'],
-  'Hammer Curl (Dumbbell)': ['Arms'],
-  'Handstand Push Up': ['Shoulders', 'Arms', 'Core'],
-  'Hang Snatch': ['Legs', 'Back', 'Shoulders'],
-  'Heel Taps': ['Core'],
-  'Hip Abduction (Machine)': ['Legs'],
-  'Hip Adduction (Machine)': ['Legs'],
-  'Hip Thrust': ['Legs'],
-  'Hip Thrust (Barbell)': ['Legs'],
-  'Hip Thrust (Machine)': ['Legs'],
-  'Hollow Rock Hold': ['Core'],
-  'Incline Bench Press (Barbell)': ['Chest', 'Shoulders', 'Arms'],
-  'Incline Bench Press (Dumbbell)': ['Chest', 'Shoulders', 'Arms'],
-  'Incline Bench Press (Smith Machine)': ['Chest', 'Shoulders', 'Arms'],
-  'Incline Chest Fly (Dumbbell)': ['Chest'],
-  'Incline Chest Press (Machine)': ['Chest', 'Shoulders', 'Arms'],
-  'Incline Push Ups': ['Chest', 'Arms'],
-  'Iso-Lateral Low Row': ['Back', 'Arms'],
-  'Jackknife Sit Up': ['Core'],
-  'Jump Squat': ['Legs'],
-  'Kettlebell Goblet Squat': ['Legs', 'Core'],
-  'Kettlebell Turkish Get Up': ['Core', 'Shoulders', 'Legs', 'Arms'],
-  'Kipping Pull Up': ['Back', 'Arms', 'Core'],
-  'Knee Raise Parallel Bars': ['Core'],
-  'Lat Pulldown (Cable)': ['Back', 'Arms'],
-  'Lat Pulldown (Machine)': ['Back', 'Arms'],
-  'Lat Pulldown (band)': ['Back', 'Arms'],
-  'Lat Pulldown - Close Grip (Cable)': ['Back', 'Arms'],
-  'Lateral Leg Raises': ['Legs'],
-  'Lateral Raise (Cable)': ['Shoulders'],
-  'Lateral Raise (Dumbbell)': ['Shoulders'],
-  'Lateral Raise (Machine)': ['Shoulders'],
-  'Lateral Squat': ['Legs'],
-  'Leg Extension (Machine)': ['Legs'],
-  'Leg Press (Machine)': ['Legs'],
-  'Leg Press Horizontal (Machine)': ['Legs'],
-  'Leg Raise Parallel Bars': ['Core'],
-  'Lunge (Barbell)': ['Legs', 'Core'],
-  'Lunge (Dumbbell)': ['Legs', 'Core'],
-  'Lying Knee Raise': ['Core'],
-  'Lying Leg Curl (Machine)': ['Legs'],
-  'Meadows Row': ['Back', 'Arms'],
-  'Muscle Up': ['Back', 'Arms', 'Chest', 'Core'],
-  'Oblique Crunch': ['Core'],
-  'One-Arm Push-Up': ['Chest', 'Arms', 'Core'],
-  'One-Arm Tricep Extension (Dumbbell)': ['Arms'],
-  'Overhead Press (Smith Machine)': ['Shoulders', 'Arms'],
-  'Overhead Squat': ['Legs', 'Shoulders', 'Core', 'Back'],
-  'Overhead Triceps Extension (Cable)': ['Arms'],
-  'Pendlay Row': ['Back', 'Arms', 'Core'],
-  'Pendulum Squat (Machine)': ['Legs'],
-  'Pinwheel Curl (Dumbbell)': ['Arms'],
-  'Plank': ['Core'],
-  'Plate Curls': ['Arms'],
-  'Plate Front Raise': ['Shoulders'],
-  'Plate Press': ['Chest', 'Arms'],
-  'Preacher Curl (Barbell)': ['Arms'],
-  'Preacher Curl (Dumbbell)': ['Arms'],
-  'Preacher Curl (Machine)': ['Arms'],
-  'Pull Up': ['Back', 'Arms', 'Core'],
-  'Pull Up (Assisted)': ['Back', 'Arms'],
-  'Pullover (Dumbbell)': ['Chest', 'Back'],
-  'Push Press': ['Shoulders', 'Legs', 'Arms'],
-  'Push Up': ['Chest', 'Arms', 'Shoulders', 'Core'],
-  'Push Up (Weighted)': ['Chest', 'Arms', 'Shoulders', 'Core'],
-  'Rack Pull': ['Back', 'Legs'],
-  'Rear Delt Reverse Fly (Machine)': ['Shoulders', 'Back'],
-  'Renegade Row': ['Back', 'Core', 'Arms'],
-  'Reverse Curl': ['Arms'],
-  'Reverse Lunge': ['Legs', 'Core'],
-  'Reverse Plank': ['Core'],
-  'Ring Dips': ['Chest', 'Arms', 'Shoulders', 'Core'],
-  'Romanian Deadlift (Barbell)': ['Legs', 'Back'],
-  'Romanian Deadlift (Dumbbell)': ['Legs', 'Back'],
-  'Russian Twist (Bodyweight)': ['Core'],
-  'Russian Twist (weighted)': ['Core'],
-  'Scapular Pull-ups': ['Back'],
-  'Seated Cable Row - Bar Grip': ['Back', 'Arms'],
-  'Seated Cable Row - Bar Wide Grip': ['Back', 'Arms'],
-  'Seated Cable Row - V Grip (Cable)': ['Back', 'Arms'],
-  'Seated Calf Raise': ['Legs'],
-  'Seated Calf Raises': ['Legs'],
-  'Seated Leg Curl (Machine)': ['Legs'],
-  'Seated Overhead Press (Barbell)': ['Shoulders', 'Arms'],
-  'Seated Shoulder Press (Machine)': ['Shoulders', 'Arms'],
-  'Shoulder Press (Dumbbell)': ['Shoulders', 'Arms'],
-  'Shoulder Press (Machine Plates)': ['Shoulders', 'Arms'],
-  'Shrug (Barbell)': ['Back', 'Shoulders'],
-  'Shrug (Dumbbell)': ['Back', 'Shoulders'],
-  'Side Bend (Dumbbell)': ['Core'],
-  'Single Arm Cable Row': ['Back', 'Arms'],
-  'Single Arm Curl (Cable)': ['Arms'],
-  'Single Arm Lat Pulldown': ['Back', 'Arms'],
-  'Single Arm Lateral Raise (Cable)': ['Shoulders'],
-  'Single Leg Glute Bridge': ['Legs'],
-  'Single Leg Hip Thrust': ['Legs'],
-  'Single Leg Press (Machine)': ['Legs'],
-  'Single Leg Romanian Deadlift (Dumbbell)': ['Legs', 'Back'],
-  'Single Leg Standing Calf Raise': ['Legs'],
-  'Sissy Squat': ['Legs'],
-  'Sit Ups': ['Core'],
-  'Skullcrusher (barbell)': ['Arms'],
-  'Spider Curl (Dumbbell)': ['Arms'],
-  'Spiderman': ['Core'],
-  'Split Squat (Dumbbell)': ['Legs', 'Core'],
-  'Squat (Barbell)': ['Legs', 'Core', 'Back'],
-  'Squat (Bodyweight)': ['Legs', 'Core'],
-  'Squat (Machine)': ['Legs', 'Core'],
-  'Squat (Smith Machine)': ['Legs', 'Core'],
-  'Stair Machine (Steps)': ['Legs'],
-  'Standing Calf Raise (Machine)': ['Legs'],
-  'Standing Leg Curls': ['Legs'],
-  'Standing Military Press (Barbell)': ['Shoulders', 'Arms', 'Core'],
-  'Sternum Pull up (Gironda)': ['Back', 'Arms'],
-  'Stiff / straight leg deadlift': ['Legs', 'Back'],
-  'Sumo Deadlift': ['Legs', 'Back'],
-  'Sumo Squat (barbell)': ['Legs', 'Core'],
-  'Superman': ['Back', 'Core'],
-  'T Bar Row': ['Back', 'Arms'],
-  'Thruster (Kettlebell)': ['Legs', 'Shoulders', 'Arms'],
-  'Triceps Dip (Weighted)': ['Arms', 'Chest', 'Shoulders'],
-  'Triceps Extension (Cable)': ['Arms'],
-  'Triceps Extension (Dumbbell)': ['Arms'],
-  'Triceps Extension (Suspension)': ['Arms'],
-  'Triceps Extension (barbell)': ['Arms'],
-  'Triceps Kickback': ['Arms'],
-  'Triceps Pushdown': ['Arms'],
-  'Triceps Rope Pushdown': ['Arms'],
-  'Upright Row (Barbell)': ['Shoulders', 'Arms', 'Back'],
-  'V Up': ['Core'],
-  'Walking': ['Legs'],
-  'Wall Sit': ['Legs'],
-  'Zercher Squat': ['Legs', 'Core', 'Back', 'Arms'],
-  'Zottman Curl (Dumbbell)': ['Arms'],
-  'painting': ['Arms', 'Shoulders'],
+export const EXERCISE_MUSCLE_WEIGHTS: Record<string, MuscleWeightMap> = {
+  'Arnold Press (Dumbbell)': { Shoulders: 1.0, Arms: 0.5 },
+  'Around The World': { Chest: 1.0, Shoulders: 0.5 },
+  'Back Extension (Weighted Hyperextension)': { Back: 1.0, Legs: 0.5 },
+  'Behind the Back Bicep Wrist Curl (Barbell)': { Arms: 1.0 },
+  'Bench Press (Barbell)': { Chest: 1.0, Shoulders: 0.5, Arms: 0.5 },
+  'Bench Press (Dumbbell)': { Chest: 1.0, Shoulders: 0.5, Arms: 0.5 },
+  'Bench Press (Smith Machine)': { Chest: 1.0, Shoulders: 0.5, Arms: 0.5 },
+  'Bench Press - Close Grip (Barbell)': { Arms: 1.0, Chest: 0.5, Shoulders: 0.3 },
+  'Bench Press - Wide Grip (Barbell)': { Chest: 1.0, Shoulders: 0.5 },
+  'Bent over fly': { Shoulders: 1.0, Back: 0.5 },
+  'Bent Over Row (Barbell)': { Back: 1.0, Arms: 0.5, Core: 0.2 },
+  'Bicep Curl (Barbell)': { Arms: 1.0 },
+  'Bicep Curl (Cable)': { Arms: 1.0 },
+  'Bicep Curl (Dumbbell)': { Arms: 1.0 },
+  'Bulgarian Split Squat': { Legs: 1.0, Core: 0.2 },
+  'Cable Crunch': { Core: 1.0 },
+  'Calf Press (Machine)': { Legs: 1.0 },
+  'Chest Dip': { Chest: 1.0, Arms: 0.5, Shoulders: 0.4 },
+  'Chest Dip (Assisted)': { Chest: 1.0, Arms: 0.5, Shoulders: 0.4 },
+  'Chest Dip (Weighted)': { Chest: 1.0, Arms: 0.5, Shoulders: 0.4 },
+  'Chest Fly (Machine)': { Chest: 1.0 },
+  'Chest Press (Machine)': { Chest: 1.0, Shoulders: 0.5, Arms: 0.5 },
+  'Chest Supported Incline Row (Dumbbell)': { Back: 1.0, Arms: 0.5 },
+  'Chest-Supported Incline Row (dumbbell)': { Back: 1.0, Arms: 0.5 },
+  'Chin Up': { Back: 1.0, Arms: 0.6 },
+  'Clean Pull': { Back: 1.0, Legs: 0.5 },
+  'Clean and Jerk': { Legs: 1.0, Back: 0.5, Shoulders: 0.5, Arms: 0.3 },
+  'Climbing': { Back: 1.0, Arms: 0.8, Core: 0.3 },
+  'Concentration Curl': { Arms: 1.0 },
+  'Dead Hang': { Back: 1.0, Arms: 0.5 },
+  'Deadlift (Band)': { Back: 1.0, Legs: 0.5, Core: 0.2 },
+  'Deadlift (Barbell)': { Back: 1.0, Legs: 0.5, Core: 0.2 },
+  'Deadlift (Dumbbell)': { Back: 1.0, Legs: 0.5, Core: 0.2 },
+  'Deadlift (Trap bar)': { Legs: 1.0, Back: 0.6, Core: 0.2 },
+  'Decline Bench Press (Dumbbell)': { Chest: 1.0, Arms: 0.5 },
+  'Decline Bench Press (Machine)': { Chest: 1.0, Arms: 0.5 },
+  'Decline Crunch': { Core: 1.0 },
+  'Decline Crunch (Weighted)': { Core: 1.0 },
+  'Decline Push Up': { Chest: 1.0, Shoulders: 0.5, Arms: 0.5, Core: 0.2 },
+  'Diamond Push Up': { Arms: 1.0, Chest: 0.5 },
+  'Dumbbell Row': { Back: 1.0, Arms: 0.5 },
+  'Dumbbell Skullcrusher': { Arms: 1.0 },
+  'Face Pull': { Shoulders: 1.0, Back: 0.5 },
+  'Farmer\'s Walk': { Arms: 1.0, Back: 0.5, Core: 0.4 },
+  'Fire Hydrants': { Legs: 1.0 },
+  'Floor Press (Barbell)': { Chest: 1.0, Arms: 0.5, Shoulders: 0.4 },
+  'Flutter Kicks': { Core: 1.0 },
+  'Frog Jumps': { Legs: 1.0 },
+  'Front Lever Raise': { Core: 1.0, Back: 0.6 },
+  'Front Squat': { Legs: 1.0, Core: 0.4, Back: 0.3 },
+  'Glute Bridge': { Legs: 1.0 },
+  'Glute Ham Raise': { Legs: 1.0, Back: 0.4 },
+  'Glute Kickback (Machine)': { Legs: 1.0 },
+  'Glute Kickback on Floor': { Legs: 1.0 },
+  'Goblet Squat': { Legs: 1.0, Core: 0.3 },
+  'Good Morning (Barbell)': { Legs: 1.0, Back: 0.6, Core: 0.3 },
+  'Hack Squat': { Legs: 1.0 },
+  'Hack Squat (Machine)': { Legs: 1.0 },
+  'Hammer Curl (Band)': { Arms: 1.0 },
+  'Hammer Curl (Cable)': { Arms: 1.0 },
+  'Hammer Curl (Dumbbell)': { Arms: 1.0 },
+  'Handstand Push Up': { Shoulders: 1.0, Arms: 0.5, Core: 0.3 },
+  'Hang Snatch': { Legs: 1.0, Back: 0.5, Shoulders: 0.5 },
+  'Heel Taps': { Core: 1.0 },
+  'Hip Abduction (Machine)': { Legs: 1.0 },
+  'Hip Adduction (Machine)': { Legs: 1.0 },
+  'Hip Thrust': { Legs: 1.0 },
+  'Hip Thrust (Barbell)': { Legs: 1.0 },
+  'Hip Thrust (Machine)': { Legs: 1.0 },
+  'Hollow Rock Hold': { Core: 1.0 },
+  'Incline Bench Press (Barbell)': { Chest: 1.0, Shoulders: 0.5, Arms: 0.5 },
+  'Incline Bench Press (Dumbbell)': { Chest: 1.0, Shoulders: 0.5, Arms: 0.5 },
+  'Incline Bench Press (Smith Machine)': { Chest: 1.0, Shoulders: 0.5, Arms: 0.5 },
+  'Incline Chest Fly (Dumbbell)': { Chest: 1.0 },
+  'Incline Chest Press (Machine)': { Chest: 1.0, Shoulders: 0.5, Arms: 0.5 },
+  'Incline Push Ups': { Chest: 1.0, Arms: 0.5 },
+  'Iso-Lateral Low Row': { Back: 1.0, Arms: 0.5 },
+  'Jackknife Sit Up': { Core: 1.0 },
+  'Jump Squat': { Legs: 1.0 },
+  'Kettlebell Goblet Squat': { Legs: 1.0, Core: 0.3 },
+  'Kettlebell Turkish Get Up': { Core: 1.0, Shoulders: 0.6, Legs: 0.5, Arms: 0.4 },
+  'Kipping Pull Up': { Back: 1.0, Arms: 0.5, Core: 0.3 },
+  'Knee Raise Parallel Bars': { Core: 1.0 },
+  'Lat Pulldown (Cable)': { Back: 1.0, Arms: 0.5 },
+  'Lat Pulldown (Machine)': { Back: 1.0, Arms: 0.5 },
+  'Lat Pulldown (band)': { Back: 1.0, Arms: 0.5 },
+  'Lat Pulldown - Close Grip (Cable)': { Back: 1.0, Arms: 0.6 },
+  'Lateral Leg Raises': { Legs: 1.0 },
+  'Lateral Raise (Cable)': { Shoulders: 1.0 },
+  'Lateral Raise (Dumbbell)': { Shoulders: 1.0 },
+  'Lateral Raise (Machine)': { Shoulders: 1.0 },
+  'Lateral Squat': { Legs: 1.0 },
+  'Leg Extension (Machine)': { Legs: 1.0 },
+  'Leg Press (Machine)': { Legs: 1.0 },
+  'Leg Press Horizontal (Machine)': { Legs: 1.0 },
+  'Leg Raise Parallel Bars': { Core: 1.0 },
+  'Lunge (Barbell)': { Legs: 1.0, Core: 0.3 },
+  'Lunge (Dumbbell)': { Legs: 1.0, Core: 0.3 },
+  'Lying Knee Raise': { Core: 1.0 },
+  'Lying Leg Curl (Machine)': { Legs: 1.0 },
+  'Meadows Row': { Back: 1.0, Arms: 0.5 },
+  'Muscle Up': { Back: 1.0, Arms: 0.6, Chest: 0.5, Core: 0.3 },
+  'Oblique Crunch': { Core: 1.0 },
+  'One-Arm Push-Up': { Chest: 1.0, Arms: 0.5, Core: 0.3 },
+  'One-Arm Tricep Extension (Dumbbell)': { Arms: 1.0 },
+  'Overhead Press (Smith Machine)': { Shoulders: 1.0, Arms: 0.5 },
+  'Overhead Squat': { Legs: 1.0, Shoulders: 0.6, Core: 0.4, Back: 0.3 },
+  'Overhead Triceps Extension (Cable)': { Arms: 1.0 },
+  'Pendlay Row': { Back: 1.0, Arms: 0.5, Core: 0.3 },
+  'Pendulum Squat (Machine)': { Legs: 1.0 },
+  'Pinwheel Curl (Dumbbell)': { Arms: 1.0 },
+  'Plank': { Core: 1.0 },
+  'Plate Curls': { Arms: 1.0 },
+  'Plate Front Raise': { Shoulders: 1.0 },
+  'Plate Press': { Chest: 1.0, Arms: 0.5 },
+  'Preacher Curl (Barbell)': { Arms: 1.0 },
+  'Preacher Curl (Dumbbell)': { Arms: 1.0 },
+  'Preacher Curl (Machine)': { Arms: 1.0 },
+  'Pull Up': { Back: 1.0, Arms: 0.5, Core: 0.2 },
+  'Pull Up (Assisted)': { Back: 1.0, Arms: 0.5 },
+  'Pullover (Dumbbell)': { Chest: 1.0, Back: 0.6 },
+  'Push Press': { Shoulders: 1.0, Legs: 0.5, Arms: 0.5 },
+  'Push Up': { Chest: 1.0, Arms: 0.5, Shoulders: 0.4, Core: 0.2 },
+  'Push Up (Weighted)': { Chest: 1.0, Arms: 0.5, Shoulders: 0.4, Core: 0.2 },
+  'Rack Pull': { Back: 1.0, Legs: 0.5 },
+  'Rear Delt Reverse Fly (Machine)': { Shoulders: 1.0, Back: 0.4 },
+  'Renegade Row': { Back: 1.0, Core: 0.5, Arms: 0.4 },
+  'Reverse Curl': { Arms: 1.0 },
+  'Reverse Lunge': { Legs: 1.0, Core: 0.2 },
+  'Reverse Plank': { Core: 1.0 },
+  'Ring Dips': { Chest: 1.0, Arms: 0.6, Shoulders: 0.5, Core: 0.3 },
+  'Romanian Deadlift (Barbell)': { Legs: 1.0, Back: 0.5, Core: 0.2 },
+  'Romanian Deadlift (Dumbbell)': { Legs: 1.0, Back: 0.5, Core: 0.2 },
+  'Russian Twist (Bodyweight)': { Core: 1.0 },
+  'Russian Twist (weighted)': { Core: 1.0 },
+  'Scapular Pull-ups': { Back: 1.0 },
+  'Seated Cable Row - Bar Grip': { Back: 1.0, Arms: 0.5 },
+  'Seated Cable Row - Bar Wide Grip': { Back: 1.0, Arms: 0.5 },
+  'Seated Cable Row - V Grip (Cable)': { Back: 1.0, Arms: 0.5 },
+  'Seated Calf Raise': { Legs: 1.0 },
+  'Seated Calf Raises': { Legs: 1.0 },
+  'Seated Leg Curl (Machine)': { Legs: 1.0 },
+  'Seated Overhead Press (Barbell)': { Shoulders: 1.0, Arms: 0.5 },
+  'Seated Shoulder Press (Machine)': { Shoulders: 1.0, Arms: 0.5 },
+  'Shoulder Press (Dumbbell)': { Shoulders: 1.0, Arms: 0.5 },
+  'Shoulder Press (Machine Plates)': { Shoulders: 1.0, Arms: 0.5 },
+  'Shrug (Barbell)': { Back: 1.0, Shoulders: 0.3 },
+  'Shrug (Dumbbell)': { Back: 1.0, Shoulders: 0.3 },
+  'Side Bend (Dumbbell)': { Core: 1.0 },
+  'Single Arm Cable Row': { Back: 1.0, Arms: 0.5 },
+  'Single Arm Curl (Cable)': { Arms: 1.0 },
+  'Single Arm Lat Pulldown': { Back: 1.0, Arms: 0.5 },
+  'Single Arm Lateral Raise (Cable)': { Shoulders: 1.0 },
+  'Single Leg Glute Bridge': { Legs: 1.0 },
+  'Single Leg Hip Thrust': { Legs: 1.0 },
+  'Single Leg Press (Machine)': { Legs: 1.0 },
+  'Single Leg Romanian Deadlift (Dumbbell)': { Legs: 1.0, Back: 0.5 },
+  'Single Leg Standing Calf Raise': { Legs: 1.0 },
+  'Sissy Squat': { Legs: 1.0 },
+  'Sit Ups': { Core: 1.0 },
+  'Skullcrusher (barbell)': { Arms: 1.0 },
+  'Spider Curl (Dumbbell)': { Arms: 1.0 },
+  'Spiderman': { Core: 1.0 },
+  'Split Squat (Dumbbell)': { Legs: 1.0, Core: 0.2 },
+  'Squat (Barbell)': { Legs: 1.0, Core: 0.3, Back: 0.2 },
+  'Squat (Bodyweight)': { Legs: 1.0, Core: 0.2 },
+  'Squat (Machine)': { Legs: 1.0, Core: 0.2 },
+  'Squat (Smith Machine)': { Legs: 1.0, Core: 0.2 },
+  'Stair Machine (Steps)': { Legs: 1.0 },
+  'Standing Calf Raise (Machine)': { Legs: 1.0 },
+  'Standing Leg Curls': { Legs: 1.0 },
+  'Standing Military Press (Barbell)': { Shoulders: 1.0, Arms: 0.5, Core: 0.2 },
+  'Sternum Pull up (Gironda)': { Back: 1.0, Arms: 0.5 },
+  'Stiff / straight leg deadlift': { Legs: 1.0, Back: 0.5, Core: 0.2 },
+  'Sumo Deadlift': { Legs: 1.0, Back: 0.6, Core: 0.2 },
+  'Sumo Squat (barbell)': { Legs: 1.0, Core: 0.3 },
+  'Superman': { Back: 1.0, Core: 0.5 },
+  'T Bar Row': { Back: 1.0, Arms: 0.5 },
+  'Thruster (Kettlebell)': { Legs: 1.0, Shoulders: 0.6, Arms: 0.4 },
+  'Triceps Dip (Weighted)': { Arms: 1.0, Chest: 0.5, Shoulders: 0.3 },
+  'Triceps Extension (Cable)': { Arms: 1.0 },
+  'Triceps Extension (Dumbbell)': { Arms: 1.0 },
+  'Triceps Extension (Suspension)': { Arms: 1.0 },
+  'Triceps Extension (barbell)': { Arms: 1.0 },
+  'Triceps Kickback': { Arms: 1.0 },
+  'Triceps Pushdown': { Arms: 1.0 },
+  'Triceps Rope Pushdown': { Arms: 1.0 },
+  'Upright Row (Barbell)': { Shoulders: 1.0, Arms: 0.5, Back: 0.3 },
+  'V Up': { Core: 1.0 },
+  'Walking': { Legs: 1.0 },
+  'Wall Sit': { Legs: 1.0 },
+  'Zercher Squat': { Legs: 1.0, Core: 0.4, Back: 0.3, Arms: 0.3 },
+  'Zottman Curl (Dumbbell)': { Arms: 1.0 },
+  'painting': { Arms: 1.0, Shoulders: 0.3 },
 };
 
-export const exerciseMuscleMapping = EXERCISE_MUSCLE_MAPPING;
+/**
+ * Derives muscle group arrays sorted by descending contribution weight
+ * for backwards compatibility with badges, filters, and tables.
+ */
+export const EXERCISE_MUSCLE_MAPPING: Record<string, MuscleGroup[]> = Object.fromEntries(
+  Object.entries(EXERCISE_MUSCLE_WEIGHTS).map(([title, weights]) => [
+    title,
+    (Object.entries(weights) as [MuscleGroup, number][])
+      .sort((a, b) => b[1] - a[1])
+      .map(([mg]) => mg),
+  ])
+);
 
+export const exerciseMuscleMapping = EXERCISE_MUSCLE_MAPPING;
 export default EXERCISE_MUSCLE_MAPPING;
 
 /**
- * Returns muscle groups for a given exercise title.
- * Falls back to ['Core'] or heuristics if not in dictionary.
+ * Returns muscle weights map for a given exercise title.
+ * Uses dictionary lookup with case-insensitive fallback and keyword heuristics.
  */
-export function getMuscleGroupsForExercise(title: string): MuscleGroup[] {
-  if (!title) return ['Core'];
+export function getMuscleWeightsForExercise(title: string): MuscleWeightMap {
+  if (!title) return { Core: 1.0 };
   const trimmed = title.trim();
-  if (EXERCISE_MUSCLE_MAPPING[trimmed]) {
-    return EXERCISE_MUSCLE_MAPPING[trimmed];
+
+  if (EXERCISE_MUSCLE_WEIGHTS[trimmed]) {
+    return EXERCISE_MUSCLE_WEIGHTS[trimmed];
   }
-  
-  // Case-insensitive fallback
+
   const lower = trimmed.toLowerCase();
-  for (const [key, groups] of Object.entries(EXERCISE_MUSCLE_MAPPING)) {
+  for (const [key, weights] of Object.entries(EXERCISE_MUSCLE_WEIGHTS)) {
     if (key.toLowerCase() === lower) {
-      return groups;
+      return weights;
     }
   }
 
-  // Basic keyword fallback heuristics
-  if (lower.includes('bench') || lower.includes('chest') || lower.includes('fly')) return ['Chest', 'Arms', 'Shoulders'];
-  if (lower.includes('squat') || lower.includes('leg') || lower.includes('calf') || lower.includes('lunge')) return ['Legs'];
-  if (lower.includes('deadlift')) return ['Back', 'Legs', 'Core'];
-  if (lower.includes('row') || lower.includes('pull') || lower.includes('chin') || lower.includes('lat')) return ['Back', 'Arms'];
-  if (lower.includes('press') || lower.includes('raise') || lower.includes('delt')) return ['Shoulders', 'Arms'];
-  if (lower.includes('curl') || lower.includes('tricep') || lower.includes('arm')) return ['Arms'];
-  if (lower.includes('crunch') || lower.includes('plank') || lower.includes('ab')) return ['Core'];
+  // Fallback heuristics
+  if (lower.includes('bench') || lower.includes('chest') || lower.includes('push up')) {
+    return { Chest: 1.0, Shoulders: 0.5, Arms: 0.5 };
+  }
+  if (lower.includes('fly')) {
+    return { Chest: 1.0 };
+  }
+  if (lower.includes('squat') || lower.includes('lunge') || lower.includes('leg press')) {
+    return { Legs: 1.0, Core: 0.3 };
+  }
+  if (lower.includes('calf') || lower.includes('leg curl') || lower.includes('leg extension')) {
+    return { Legs: 1.0 };
+  }
+  if (lower.includes('deadlift')) {
+    return { Back: 1.0, Legs: 0.5, Core: 0.2 };
+  }
+  if (lower.includes('row') || lower.includes('pulldown') || lower.includes('pull up') || lower.includes('chin')) {
+    return { Back: 1.0, Arms: 0.5 };
+  }
+  if (lower.includes('press') || lower.includes('raise') || lower.includes('delt')) {
+    return { Shoulders: 1.0, Arms: 0.5 };
+  }
+  if (lower.includes('curl') || lower.includes('tricep') || lower.includes('skullcrusher') || lower.includes('pushdown')) {
+    return { Arms: 1.0 };
+  }
+  if (lower.includes('crunch') || lower.includes('plank') || lower.includes('ab') || lower.includes('sit up')) {
+    return { Core: 1.0 };
+  }
 
-  return ['Core'];
+  return { Core: 1.0 };
+}
+
+/**
+ * Returns muscle groups for a given exercise title (ordered by primary mover first).
+ */
+export function getMuscleGroupsForExercise(title: string): MuscleGroup[] {
+  const weights = getMuscleWeightsForExercise(title);
+  const groups = (Object.entries(weights) as [MuscleGroup, number][])
+    .sort((a, b) => b[1] - a[1])
+    .map(([mg]) => mg);
+
+  return groups.length > 0 ? groups : ['Core'];
 }

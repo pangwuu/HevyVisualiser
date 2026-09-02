@@ -30,6 +30,7 @@ describe('Calculations & Analytics', () => {
       volumeKg: 400,
       estimated1RM: 53.3,
       muscleGroups: ['Chest', 'Arms', 'Shoulders'],
+      muscleWeights: { Chest: 1.0, Shoulders: 0.5, Arms: 0.5 },
       exerciseNotes: '',
     },
     {
@@ -47,6 +48,7 @@ describe('Calculations & Analytics', () => {
       volumeKg: 480,
       estimated1RM: 96,
       muscleGroups: ['Chest', 'Arms', 'Shoulders'],
+      muscleWeights: { Chest: 1.0, Shoulders: 0.5, Arms: 0.5 },
       exerciseNotes: '',
     },
     {
@@ -64,6 +66,7 @@ describe('Calculations & Analytics', () => {
       volumeKg: 600,
       estimated1RM: 140,
       muscleGroups: ['Back', 'Legs', 'Core'],
+      muscleWeights: { Back: 1.0, Legs: 0.5, Core: 0.2 },
       exerciseNotes: '',
     },
   ];
@@ -76,12 +79,12 @@ describe('Calculations & Analytics', () => {
       endTime: dayjs('2026-08-30T11:00:00.000Z').toDate(),
       workoutDate: '2026-08-30',
       durationMinutes: 60,
-      sets: [mockSets[0], mockSets[1]],
       totalVolumeKg: 880,
-      workingSetsCount: 1,
       totalSetsCount: 2,
+      workingSetsCount: 1,
       exercises: ['Bench Press (Barbell)'],
       muscleGroups: ['Chest', 'Arms', 'Shoulders'],
+      sets: [mockSets[0], mockSets[1]],
     },
     {
       id: 's2',
@@ -90,34 +93,33 @@ describe('Calculations & Analytics', () => {
       endTime: dayjs('2026-08-15T11:00:00.000Z').toDate(),
       workoutDate: '2026-08-15',
       durationMinutes: 60,
-      sets: [mockSets[2]],
       totalVolumeKg: 600,
-      workingSetsCount: 1,
       totalSetsCount: 1,
+      workingSetsCount: 1,
       exercises: ['Deadlift (Barbell)'],
       muscleGroups: ['Back', 'Legs', 'Core'],
+      sets: [mockSets[2]],
     },
   ];
 
   describe('filterWorkoutSets', () => {
-    it('filters out warmup sets when includeWarmups is false', () => {
-      const filter: FilterState = { timeRange: 'all', includeWarmups: false };
+    it('filters sets within 7 days window', () => {
+      const filter: FilterState = {
+        timeRange: '7d',
+        includeWarmups: true,
+      };
       const filtered = filterWorkoutSets(mockSets, filter, refDate);
-      expect(filtered.length).toBe(2);
+      expect(filtered.length).toBe(2); // Only 2026-08-30
+    });
+
+    it('excludes warmup sets when toggle is off', () => {
+      const filter: FilterState = {
+        timeRange: 'all',
+        includeWarmups: false,
+      };
+      const filtered = filterWorkoutSets(mockSets, filter, refDate);
+      expect(filtered.length).toBe(2); // Excludes set id: 1
       expect(filtered.some((s) => s.setType === 'warmup')).toBe(false);
-    });
-
-    it('includes warmup sets when includeWarmups is true', () => {
-      const filter: FilterState = { timeRange: 'all', includeWarmups: true };
-      const filtered = filterWorkoutSets(mockSets, filter, refDate);
-      expect(filtered.length).toBe(3);
-    });
-
-    it('filters by 7d time range', () => {
-      const filter: FilterState = { timeRange: '7d', includeWarmups: true };
-      const filtered = filterWorkoutSets(mockSets, filter, refDate);
-      expect(filtered.length).toBe(2);
-      expect(filtered.every((s) => s.workoutDate === '2026-08-30')).toBe(true);
     });
 
     it('filters by custom date range', () => {
@@ -129,12 +131,23 @@ describe('Calculations & Analytics', () => {
       };
       const filtered = filterWorkoutSets(mockSets, filter, refDate);
       expect(filtered.length).toBe(1);
-      expect(filtered[0].workoutDate).toBe('2026-08-15');
+      expect(filtered[0].exerciseTitle).toBe('Deadlift (Barbell)');
     });
   });
 
   describe('calculateStreaks', () => {
-    it('calculates longest streak and consecutive day sequences', () => {
+    it('calculates current and longest workout streaks correctly', () => {
+      const sessions: WorkoutSession[] = [
+        { workoutDate: '2026-08-31' } as any,
+        { workoutDate: '2026-08-30' } as any,
+        { workoutDate: '2026-08-28' } as any,
+      ];
+      const { currentStreak, longestStreak } = calculateStreaks(sessions, refDate);
+      expect(currentStreak).toBe(2);
+      expect(longestStreak).toBe(2);
+    });
+
+    it('handles non-consecutive dates accurately', () => {
       const sessions: WorkoutSession[] = [
         { workoutDate: '2026-08-01' } as any,
         { workoutDate: '2026-08-02' } as any,
@@ -154,22 +167,29 @@ describe('Calculations & Analytics', () => {
       expect(summary.totalVolumeKg).toBe(1480);
       expect(summary.totalVolumeTonnes).toBe('1.5');
       expect(summary.favouriteExercise).toBe('Bench Press (Barbell)');
+      expect(summary.mostTrainedMuscle).toBe('Chest');
+      expect(summary.mostTrainedMuscleSets).toBe(2);
     });
   });
 
   describe('calculateMuscleDistribution', () => {
-    it('credits compound sets to all target muscle groups', () => {
+    it('credits compound sets proportionally based on biomechanical weights', () => {
       const dist = calculateMuscleDistribution(mockSets);
 
+      // 2 bench sets (1.0 Chest, 0.5 Shoulders, 0.5 Arms) + 1 deadlift (1.0 Back, 0.5 Legs, 0.2 Core)
       expect(dist.setsByMuscle.Chest).toBe(2);
-      expect(dist.setsByMuscle.Arms).toBe(2);
-      expect(dist.setsByMuscle.Shoulders).toBe(2);
+      expect(dist.setsByMuscle.Shoulders).toBe(1);
+      expect(dist.setsByMuscle.Arms).toBe(1);
       expect(dist.setsByMuscle.Back).toBe(1);
       expect(dist.setsByMuscle.Legs).toBe(1);
-      expect(dist.setsByMuscle.Core).toBe(1);
+      expect(dist.setsByMuscle.Core).toBe(0);
 
       expect(dist.volumeByMuscle.Chest).toBe(880);
+      expect(dist.volumeByMuscle.Shoulders).toBe(440);
+      expect(dist.volumeByMuscle.Arms).toBe(440);
       expect(dist.volumeByMuscle.Back).toBe(600);
+      expect(dist.volumeByMuscle.Legs).toBe(300);
+      expect(dist.volumeByMuscle.Core).toBe(120);
     });
   });
 

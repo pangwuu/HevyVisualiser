@@ -20,6 +20,7 @@ export interface WorkoutSet {
   durationSeconds?: number;
   rpe?: number;
   muscleGroups: MuscleGroup[];
+  muscleWeights?: Partial<Record<MuscleGroup, number>>;
   volumeKg: number; // weightKg * reps (0 if undefined)
   estimated1RM?: number; // Epley formula
 }

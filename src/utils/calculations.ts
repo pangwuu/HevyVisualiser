@@ -112,7 +112,7 @@ export function filterWorkoutSessions(
 /**
  * Calculate streaks from session dates
  */
-export function calculateStreaks(sessions: WorkoutSession[]): {
+export function calculateStreaks(sessions: WorkoutSession[], referenceDate?: dayjs.Dayjs): {
   currentStreak: number;
   longestStreak: number;
 } {
@@ -124,8 +124,9 @@ export function calculateStreaks(sessions: WorkoutSession[]): {
 
   if (sortedDates.length === 0) return { currentStreak: 0, longestStreak: 0 };
 
-  const today = dayjs().format('YYYY-MM-DD');
-  const yesterday = dayjs().subtract(1, 'day').format('YYYY-MM-DD');
+  const ref = referenceDate || dayjs();
+  const today = ref.format('YYYY-MM-DD');
+  const yesterday = ref.subtract(1, 'day').format('YYYY-MM-DD');
 
   // Calculate current streak (active if worked out today or yesterday)
   let currentStreak = 0;
@@ -189,7 +190,7 @@ export function calculateDashboardSummary(
   const totalSets = filteredSets.length;
   const totalReps = filteredSets.reduce((sum, s) => sum + (s.reps || 0), 0);
 
-  // Muscle group set counts
+  // Muscle group set counts (weighted contributions)
   const muscleSetCounts: Record<MuscleGroup, number> = {
     Back: 0,
     Legs: 0,
@@ -200,9 +201,16 @@ export function calculateDashboardSummary(
   };
 
   filteredSets.forEach((s) => {
-    s.muscleGroups.forEach((mg) => {
-      muscleSetCounts[mg] = (muscleSetCounts[mg] || 0) + 1;
-    });
+    if (s.muscleWeights && Object.keys(s.muscleWeights).length > 0) {
+      Object.entries(s.muscleWeights).forEach(([mg, weight]) => {
+        const muscle = mg as MuscleGroup;
+        muscleSetCounts[muscle] = (muscleSetCounts[muscle] || 0) + (weight ?? 1.0);
+      });
+    } else {
+      s.muscleGroups.forEach((mg) => {
+        muscleSetCounts[mg] = (muscleSetCounts[mg] || 0) + 1;
+      });
+    }
   });
 
   let mostTrainedMuscle: MuscleGroup = 'Chest';
@@ -238,14 +246,14 @@ export function calculateDashboardSummary(
     totalSets,
     totalReps,
     mostTrainedMuscle: maxMuscleSets > 0 ? mostTrainedMuscle : 'None',
-    mostTrainedMuscleSets: maxMuscleSets,
+    mostTrainedMuscleSets: Math.round(maxMuscleSets),
     favouriteExercise,
     favouriteExerciseSets: maxExSets,
   };
 }
 
 /**
- * Calculate muscle distributions for radar and bar charts
+ * Calculate muscle distributions for radar and bar charts (using weighted contributions)
  */
 export function calculateMuscleDistribution(filteredSets: WorkoutSet[]) {
   const setsByMuscle: Record<MuscleGroup, number> = {
@@ -267,18 +275,35 @@ export function calculateMuscleDistribution(filteredSets: WorkoutSet[]) {
   };
 
   filteredSets.forEach((s) => {
-    s.muscleGroups.forEach((mg) => {
-      setsByMuscle[mg] = (setsByMuscle[mg] || 0) + 1;
-      volumeByMuscle[mg] = (volumeByMuscle[mg] || 0) + s.volumeKg;
-    });
+    if (s.muscleWeights && Object.keys(s.muscleWeights).length > 0) {
+      Object.entries(s.muscleWeights).forEach(([mg, weight]) => {
+        const muscle = mg as MuscleGroup;
+        const w = weight ?? 1.0;
+        setsByMuscle[muscle] = (setsByMuscle[muscle] || 0) + w;
+        volumeByMuscle[muscle] = (volumeByMuscle[muscle] || 0) + (s.volumeKg * w);
+      });
+    } else {
+      s.muscleGroups.forEach((mg) => {
+        setsByMuscle[mg] = (setsByMuscle[mg] || 0) + 1;
+        volumeByMuscle[mg] = (volumeByMuscle[mg] || 0) + s.volumeKg;
+      });
+    }
   });
+
+  const roundedSetsByMuscle = Object.fromEntries(
+    MUSCLE_GROUPS.map((mg) => [mg, Math.round(setsByMuscle[mg])])
+  ) as Record<MuscleGroup, number>;
+
+  const roundedVolumeByMuscle = Object.fromEntries(
+    MUSCLE_GROUPS.map((mg) => [mg, Math.round(volumeByMuscle[mg])])
+  ) as Record<MuscleGroup, number>;
 
   return {
     muscleGroups: MUSCLE_GROUPS,
-    setsData: MUSCLE_GROUPS.map((mg) => setsByMuscle[mg]),
-    volumeData: MUSCLE_GROUPS.map((mg) => Math.round(volumeByMuscle[mg])),
-    setsByMuscle,
-    volumeByMuscle,
+    setsData: MUSCLE_GROUPS.map((mg) => roundedSetsByMuscle[mg]),
+    volumeData: MUSCLE_GROUPS.map((mg) => roundedVolumeByMuscle[mg]),
+    setsByMuscle: roundedSetsByMuscle,
+    volumeByMuscle: roundedVolumeByMuscle,
   };
 }
 
