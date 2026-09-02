@@ -110,10 +110,19 @@ export const HeatmapCalendar: React.FC<HeatmapCalendarProps> = ({
           </div>
         </div>
       }
-      style={{ backgroundColor: '#141414', borderColor: '#303030' }}
+      style={{ backgroundColor: '#141414', borderColor: '#303030', overflow: 'hidden' }}
     >
-      <div className="mobile-touch-scroll" style={{ paddingBottom: 6 }}>
-        <div style={{ display: 'flex', gap: 4, minWidth: weeks.length * 15 + 40 }}>
+      <div
+        className="mobile-touch-scroll heatmap-scroll-container"
+        style={{
+          overflowX: 'auto',
+          WebkitOverflowScrolling: 'touch',
+          paddingBottom: 6,
+          maxWidth: '100%',
+          width: '100%',
+        }}
+      >
+        <div style={{ display: 'flex', gap: 4, width: 'max-content' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 3, marginRight: 6, paddingTop: 20 }}>
             {dayLabels.map((lbl, idx) => (
               <div

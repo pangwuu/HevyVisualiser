@@ -120,11 +120,13 @@ body,
   .ant-statistic-content-value {
     font-size: 20px !important;
   }
+}
 
-  /* Smooth mobile touch scrolling */
-  .mobile-touch-scroll {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-  }
+/* Horizontal scroll containers (Heatmap, Tables, Timelines) for both Desktop & Mobile */
+.mobile-touch-scroll,
+.heatmap-scroll-container {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  max-width: 100%;
 }

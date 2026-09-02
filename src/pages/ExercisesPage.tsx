@@ -103,7 +103,7 @@ export const ExercisesPage: React.FC = () => {
       width: 125,
     },
     {
-      title: 'Best Performance',
+      title: 'Best predicted 1RM',
       key: 'bestPerformance',
       render: (_: any, record: ExerciseStats) =>
         record.maxWeightKg > 0 ? (
