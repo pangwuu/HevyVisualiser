@@ -17,7 +17,6 @@ import {
 import {
   InboxOutlined,
   DeleteOutlined,
-  ReloadOutlined,
   FileTextOutlined,
   MobileOutlined,
   LeftOutlined,
@@ -347,43 +346,38 @@ export const SettingsPage: React.FC = () => {
       </Card>
 
       {/* 4. Data Management Actions */}
-      <Card
-        title={<span style={{ color: '#fff' }}>Data Management Actions</span>}
-        style={{ backgroundColor: '#141414', borderColor: '#303030' }}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          margin: '24px 0',
+        }}
       >
-        <Space size="middle" wrap>
-          <Popconfirm
-            title="Reset to Sample Dataset?"
-            description="This will clear custom uploaded CSVs and restore the sample demo dataset."
-            onConfirm={() => {
-              resetDefaultData();
-              message.info('Reset to sample demonstration dataset');
+        <Popconfirm
+          title="Clear All Stored Data?"
+          description="This will remove all workouts and body measurements. This action is irreversible, you will need to upload again."
+          onConfirm={() => {
+            resetDefaultData();
+            message.success('Cleared stored data from browser');
+          }}
+          okText="Clear"
+          cancelText="Cancel"
+          okButtonProps={{ danger: true }}
+        >
+          <Button
+            danger
+            icon={<DeleteOutlined />}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
-            okText="Yes, Reset"
-            cancelText="Cancel"
           >
-            <Button icon={<ReloadOutlined />}>
-              Restore Default Sample Dataset
-            </Button>
-          </Popconfirm>
-
-          <Popconfirm
-            title="Clear All Stored Data?"
-            description="This will remove all workouts and body measurements. This action is irreversible, you will need to upload again."
-            onConfirm={() => {
-              resetDefaultData();
-              message.success('Cleared stored data from browser');
-            }}
-            okText="Clear"
-            cancelText="Cancel"
-            okButtonProps={{ danger: true }}
-          >
-            <Button danger icon={<DeleteOutlined />}>
-              Clear all stored data
-            </Button>
-          </Popconfirm>
-        </Space>
-      </Card>
+            Clear all stored data
+          </Button>
+        </Popconfirm>
+      </div>
 
       {/* Rich Upload Success Modal */}
       <Modal
