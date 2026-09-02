@@ -31,7 +31,6 @@ export const TimeFilterBar: React.FC = () => {
         { label: '3M', value: '3m' },
         { label: '1Y', value: '1y' },
         { label: 'All', value: 'all' },
-        { label: 'Custom', value: 'custom' },
       ]
     : [
         { label: '7 Days', value: '7d' },
@@ -76,14 +75,14 @@ export const TimeFilterBar: React.FC = () => {
 
         <Segmented
           block={isMobile}
-          size={isMobile ? 'middle' : 'middle'}
-          value={filter.timeRange}
+          size="middle"
+          value={isMobile && filter.timeRange === 'custom' ? 'all' : filter.timeRange}
           onChange={(val) => handleRangeChange(val as TimeRangeOption)}
           options={segmentedOptions}
           style={{ backgroundColor: '#141414' }}
         />
 
-        {filter.timeRange === 'custom' && (
+        {!isMobile && filter.timeRange === 'custom' && (
           <RangePicker
             value={
               filter.customStartDate && filter.customEndDate
@@ -92,7 +91,7 @@ export const TimeFilterBar: React.FC = () => {
             }
             onChange={handleCustomDateChange}
             format="YYYY-MM-DD"
-            style={{ backgroundColor: '#141414', width: isMobile ? '100%' : 'auto' }}
+            style={{ backgroundColor: '#141414' }}
           />
         )}
       </div>
