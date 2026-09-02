@@ -69,7 +69,20 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const navContent = (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       {/* Brand logo */}
-      <div style={{ padding: '20px 16px', display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div
+        onClick={() => {
+          navigate('/');
+          setMobileDrawerOpen(false);
+        }}
+        style={{
+          padding: '20px 16px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 10,
+          cursor: 'pointer',
+          userSelect: 'none',
+        }}
+      >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 34, height: 34, borderRadius: 8, backgroundColor: 'rgba(24, 144, 255, 0.15)' }}>
           <Dumbbell size={20} color="#1890ff" />
         </div>
@@ -160,9 +173,15 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
               icon={<MenuOutlined style={{ color: '#fff', fontSize: 18 }} />}
               onClick={() => setMobileDrawerOpen(true)}
             />
-            <span style={{ fontWeight: 700, fontSize: 16, color: '#fff' }}>
-              Hevy Data Dashboard
-            </span>
+            <div
+              onClick={() => navigate('/')}
+              style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', userSelect: 'none' }}
+            >
+              <Dumbbell size={18} color="#1890ff" />
+              <span style={{ fontWeight: 700, fontSize: 16, color: '#fff' }}>
+                Hevy Data Dashboard
+              </span>
+            </div>
           </div>
 
           <Space size="middle">
