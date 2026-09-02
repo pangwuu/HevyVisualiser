@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Card, Statistic, Typography, Table, Tag, Space, Button, Alert } from 'antd';
+import { Row, Col, Card, Statistic, Typography, Table, Tag, Space, Button } from 'antd';
 import {
   FireOutlined,
   ClockCircleOutlined,
@@ -8,10 +8,9 @@ import {
   AppstoreOutlined,
   HeartFilled,
   RightOutlined,
-  CloudUploadOutlined,
 } from '@ant-design/icons';
-import { Dumbbell, AlertTriangle, Clock } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Dumbbell, Clock } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useWorkoutData } from '../hooks/useWorkoutData';
 import { TimeFilterBar } from '../components/Filters/TimeFilterBar';
@@ -21,14 +20,12 @@ import { MuscleRadarChart } from '../components/Charts/MuscleRadarChart';
 const { Title, Text } = Typography;
 
 export const DashboardPage: React.FC = () => {
-  const navigate = useNavigate();
   const {
     dashboardSummary,
     streaks,
     filteredSessions,
     muscleDistribution,
     allSessions,
-    isUsingDefault,
   } = useWorkoutData();
 
   const sessionColumns = [
@@ -84,37 +81,6 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <div>
-      {/* Sample Data Alert Notice */}
-      {isUsingDefault && (
-        <Alert
-          message={
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-              <div>
-                <strong style={{ color: '#faad14', fontSize: 15 }}>
-                  Viewing Sample Demo Dataset
-                </strong>
-                <div style={{ color: '#d9d9d9', fontSize: 13, marginTop: 2 }}>
-                  You are currently viewing a demonstration dataset. Upload your personal Hevy CSV export to visualize your real workout statistics, 1RM progression, and muscle distribution.
-                </div>
-              </div>
-              <Button
-                type="primary"
-                icon={<CloudUploadOutlined />}
-                onClick={() => navigate('/settings')}
-                style={{ backgroundColor: '#faad14', borderColor: '#d48806', color: '#000', fontWeight: 600 }}
-              >
-                Upload Your CSV
-              </Button>
-            </div>
-          }
-          type="warning"
-          showIcon
-          icon={<AlertTriangle size={20} color="#faad14" />}
-          style={{ marginBottom: 20, backgroundColor: 'rgba(250, 173, 20, 0.1)', borderColor: 'rgba(250, 173, 20, 0.3)' }}
-          closable
-        />
-      )}
-
       <div style={{ marginBottom: 16 }}>
         <Title level={2} style={{ color: '#fff', margin: 0, display: 'flex', alignItems: 'center', gap: 10 }}>
           <Dumbbell size={26} color="#1890ff" />

@@ -54,7 +54,7 @@ describe('Page Components Rendering', () => {
   it('renders SettingsPage with export instructions and uploaders', () => {
     renderWithProviders(<SettingsPage />);
     expect(screen.getByText(/Data Settings & CSV Import/i)).toBeInTheDocument();
-    expect(screen.getByText(/How to Export Data from Hevy Mobile App/i)).toBeInTheDocument();
+    expect(screen.getByText(/How to Export Data from the Hevy App/i)).toBeInTheDocument();
     expect(screen.getByText(/Click or drag workout_data.csv here/i)).toBeInTheDocument();
   });
 });

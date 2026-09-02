@@ -22,10 +22,11 @@ import {
   LeftOutlined,
   RightOutlined,
 } from '@ant-design/icons';
-import { Settings, UploadCloud, FileSpreadsheet, ShieldCheck, Dumbbell } from 'lucide-react';
+import { Settings, UploadCloud, FileSpreadsheet, ShieldCheck, FolderArchive, Dumbbell } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import { useWorkoutData } from '../hooks/useWorkoutData';
+import { parseWorkoutCsv, parseMeasurementCsv } from '../utils/csvParser';
 
 const { Title, Text, Paragraph } = Typography;
 const { Dragger } = Upload;
@@ -46,6 +47,8 @@ export const SettingsPage: React.FC = () => {
 
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+
+  // Upload success modal state
   const [successModalData, setSuccessModalData] = useState<{
     visible: boolean;
     type: 'workout' | 'measurement';
@@ -63,17 +66,27 @@ export const SettingsPage: React.FC = () => {
     reader.onload = (e) => {
       const text = e.target?.result as string;
       if (text && text.includes('exercise_title')) {
+        const parsed = parseWorkoutCsv(text);
+        if (parsed.length === 0) {
+          message.error('No data uploaded: The CSV file does not contain valid workout records. Your existing data was preserved.');
+          setLoading(false);
+          return;
+        }
         uploadWorkout(text);
-        message.success('Workout CSV parsed and saved to LocalStorage!');
+        message.success(`Successfully uploaded ${parsed.length} workout sets!`);
         setSuccessModalData({
           visible: true,
           type: 'workout',
-          recordsCount: text.split('\n').filter(Boolean).length - 1,
-          extraInfo: 'All your workouts, volume trends, and PRs are now updated!',
+          recordsCount: parsed.length,
+          extraInfo: 'All your workout history, volume trends, and PRs have been updated.',
         });
       } else {
-        message.error('Invalid workout CSV. Please ensure you uploaded workout_data.csv from Hevy.');
+        message.error('No data uploaded: Invalid or empty workout CSV. Please ensure you upload workout_data.csv exported from Hevy.');
       }
+      setLoading(false);
+    };
+    reader.onerror = () => {
+      message.error('No data uploaded: Failed to read the file.');
       setLoading(false);
     };
     reader.readAsText(file);
@@ -86,17 +99,27 @@ export const SettingsPage: React.FC = () => {
     reader.onload = (e) => {
       const text = e.target?.result as string;
       if (text && (text.includes('weight_kg') || text.includes('date'))) {
+        const parsed = parseMeasurementCsv(text);
+        if (parsed.length === 0) {
+          message.error('No data uploaded: The CSV file does not contain valid measurement records. Your existing data was preserved.');
+          setLoading(false);
+          return;
+        }
         uploadMeasurement(text);
-        message.success('Measurement CSV parsed and saved to LocalStorage!');
+        message.success(`Successfully uploaded ${parsed.length} measurement entries!`);
         setSuccessModalData({
           visible: true,
           type: 'measurement',
-          recordsCount: text.split('\n').filter(Boolean).length - 1,
-          extraInfo: 'Your body weight and circumference charts are now updated!',
+          recordsCount: parsed.length,
+          extraInfo: 'Your body weight and circumference charts have been updated.',
         });
       } else {
-        message.error('Invalid measurement CSV. Please ensure you uploaded measurement_data.csv from Hevy.');
+        message.error('No data uploaded: Invalid or empty measurement CSV. Please ensure you upload measurement_data.csv exported from Hevy.');
       }
+      setLoading(false);
+    };
+    reader.onerror = () => {
+      message.error('No data uploaded: Failed to read the file.');
       setLoading(false);
     };
     reader.readAsText(file);
@@ -107,7 +130,7 @@ export const SettingsPage: React.FC = () => {
     {
       title: 'Open Hevy App',
       sub: 'Profile tab',
-      description: 'Open the Hevy mobile app on iOS or Android and tap your Profile icon in the bottom right navigation bar.',
+      description: 'Open the Hevy mobile app on iOS or Android and tap the Profile icon in the bottom right corner.',
       icon: <MobileOutlined />,
     },
     {
@@ -124,14 +147,29 @@ export const SettingsPage: React.FC = () => {
     },
     {
       title: 'Export CSV',
-      sub: 'Generate exports',
-      description: 'Tap "Export Data" and confirm. Hevy will export a CSV file containing your workout_data.csv or measurement_data.csv. If you want to upload both you\'ll need to do this step twice seperately for workout and measurement data.',
+      sub: 'Generate export',
+      description: 'Tap "Export Data" and confirm. Hevy will export an archive containing your workout_data.csv and measurement_data.csv files.',
       icon: <UploadCloud size={16} />,
+    },
+    {
+      title: 'Save & Unzip',
+      sub: 'iOS & Android Files',
+      description: (
+        <div>
+          <div style={{ marginBottom: 6 }}>
+            <strong style={{ color: '#1890ff' }}>📱 iOS (iPhone / iPad):</strong> On the share popup, tap <strong>"Save to Files"</strong> and pick a folder (e.g. Downloads). Open the <strong>Files app</strong>, tap <code>hevy_export.zip</code> once to unzip it, and you'll find <code>workout_data.csv</code> and <code>measurement_data.csv</code>.
+          </div>
+          <div>
+            <strong style={{ color: '#52c41a' }}>🤖 Android:</strong> Tap <strong>"Save to Downloads"</strong> (or Save to Device). Open <strong>Files by Google</strong> or your device's file manager, tap the ZIP archive and select <strong>"Extract"</strong>.
+          </div>
+        </div>
+      ),
+      icon: <FolderArchive size={16} />,
     },
     {
       title: 'Upload Here',
       sub: 'Drop or click',
-      description: 'Drop workout_data.csv and measurement_data.csv into the upload boxes above!',
+      description: 'Drag and drop or click to upload the extracted workout_data.csv and measurement_data.csv files into the upload boxes above!',
       icon: <ShieldCheck size={16} />,
     },
   ];
@@ -280,7 +318,7 @@ export const SettingsPage: React.FC = () => {
         title={
           <span style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#1890ff' }}>
             <MobileOutlined />
-            How to Export Data from Hevy Mobile App
+            How to Export Data from the Hevy App
           </span>
         }
         style={{ backgroundColor: '#141414', borderColor: '#303030', marginBottom: 24 }}

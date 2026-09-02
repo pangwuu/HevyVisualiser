@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Layout, Menu, Typography, Button, Drawer, Tag, Space } from 'antd';
+import { Layout, Menu, Typography, Button, Drawer, Tag, Space, Alert } from 'antd';
 import {
   DashboardOutlined,
   FireOutlined,
@@ -10,7 +10,7 @@ import {
   MenuOutlined,
   CloudUploadOutlined,
 } from '@ant-design/icons';
-import { Dumbbell } from 'lucide-react';
+import { Dumbbell, AlertTriangle } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useWorkoutData } from '../../hooks/useWorkoutData';
 
@@ -26,7 +26,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { allSessions, isUsingDefault } = useWorkoutData();
+  const { allSessions, allSets, isUsingDefault } = useWorkoutData();
 
   const menuItems = [
     {
@@ -180,6 +180,68 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         {/* Page Content */}
         <Content className="app-content-wrapper">
           <div style={{ maxWidth: 1400, margin: '0 auto' }}>
+            {/* Global Sample Demo Dataset Alert */}
+            {location.pathname !== '/settings' && isUsingDefault && (
+              <Alert
+                message={
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+                    <div>
+                      <strong style={{ color: '#faad14', fontSize: 14 }}>
+                        Viewing Sample Demo Dataset
+                      </strong>
+                      <div style={{ color: '#d9d9d9', fontSize: 13, marginTop: 2 }}>
+                        You are currently viewing a demonstration dataset. Upload your personal Hevy CSV export to visualize your real workout statistics, 1RM progression, and muscle distribution.
+                      </div>
+                    </div>
+                    <Button
+                      type="primary"
+                      icon={<CloudUploadOutlined />}
+                      onClick={() => navigate('/settings')}
+                      style={{ backgroundColor: '#faad14', borderColor: '#d48806', color: '#000', fontWeight: 600 }}
+                    >
+                      Upload Your CSV
+                    </Button>
+                  </div>
+                }
+                type="warning"
+                showIcon
+                icon={<AlertTriangle size={18} color="#faad14" />}
+                style={{ marginBottom: 16, backgroundColor: 'rgba(250, 173, 20, 0.1)', borderColor: 'rgba(250, 173, 20, 0.3)' }}
+                closable
+              />
+            )}
+
+            {/* Global No Data Uploaded Alert */}
+            {location.pathname !== '/settings' && !isUsingDefault && allSets.length === 0 && (
+              <Alert
+                message={
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+                    <div>
+                      <strong style={{ color: '#ff4d4f', fontSize: 14 }}>
+                        No Data Uploaded
+                      </strong>
+                      <div style={{ color: '#d9d9d9', fontSize: 13, marginTop: 2 }}>
+                        No workout records found. Please upload your Hevy workout_data.csv to start visualizing your training data.
+                      </div>
+                    </div>
+                    <Button
+                      type="primary"
+                      danger
+                      icon={<CloudUploadOutlined />}
+                      onClick={() => navigate('/settings')}
+                      style={{ fontWeight: 600 }}
+                    >
+                      Upload CSV Now
+                    </Button>
+                  </div>
+                }
+                type="error"
+                showIcon
+                icon={<AlertTriangle size={18} color="#ff4d4f" />}
+                style={{ marginBottom: 16, backgroundColor: 'rgba(255, 77, 79, 0.1)', borderColor: 'rgba(255, 77, 79, 0.3)' }}
+              />
+            )}
+
             {children}
           </div>
         </Content>

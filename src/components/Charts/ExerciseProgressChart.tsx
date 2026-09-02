@@ -98,7 +98,7 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
 
     if (showConfidenceBand) {
       datasets.push({
-        label: 'Upper Estimate (+5%)',
+        label: 'Upper Confidence (+5%)',
         data: sessionAggregates.map((s) => Number((s.max1RM * 1.05).toFixed(1))),
         borderColor: 'transparent',
         backgroundColor: 'rgba(24, 144, 255, 0.08)',
@@ -108,7 +108,7 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
       });
 
       datasets.push({
-        label: 'Lower Estimate (-5%)',
+        label: 'Lower Confidence (-5%)',
         data: sessionAggregates.map((s) => Number((s.min1RM * 0.95).toFixed(1))),
         borderColor: 'transparent',
         backgroundColor: 'rgba(24, 144, 255, 0.08)',
@@ -119,7 +119,7 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
     }
 
     datasets.push({
-      label: 'Estimated 1RM (kg)',
+      label: 'Predicted 1RM (kg)',
       data: sessionAggregates.map((s) => s.max1RM),
       borderColor: '#1890ff',
       backgroundColor: '#1890ff',
@@ -155,7 +155,7 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
         position: 'top' as const,
         labels: {
           color: '#d9d9d9',
-          filter: (item: any) => !item.text.includes('Estimate'),
+          filter: (item: any) => !item.text.includes('Confidence'),
         },
       },
       tooltip: {
