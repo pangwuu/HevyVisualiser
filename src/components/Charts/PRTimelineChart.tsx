@@ -23,9 +23,13 @@ export const PRTimelineChart: React.FC<PRTimelineChartProps> = ({
     return Array.from(set).sort();
   }, [personalRecords]);
 
-  // Sort newest first for intuitive timeline reading
+  // Sort newest first using exact session timestamp
   const allFilteredPRs = useMemo(() => {
-    let list = [...personalRecords].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    let list = [...personalRecords].sort((a, b) => {
+      const timeA = a.dateTime ? a.dateTime.getTime() : new Date(a.date).getTime();
+      const timeB = b.dateTime ? b.dateTime.getTime() : new Date(b.date).getTime();
+      return timeB - timeA;
+    });
     if (selectedExercise !== 'all') {
       list = list.filter((pr) => pr.exerciseTitle === selectedExercise);
     }
@@ -42,8 +46,8 @@ export const PRTimelineChart: React.FC<PRTimelineChartProps> = ({
   return (
     <Card
       title={
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 16, fontWeight: 700, color: '#fff' }}>
             <Crown size={18} color="#faad14" />
             <span>{title}</span>
             <Tag color="gold" style={{ fontSize: 11, fontWeight: 600 }}>
@@ -51,7 +55,7 @@ export const PRTimelineChart: React.FC<PRTimelineChartProps> = ({
             </Tag>
           </span>
           <Select
-            style={{ width: 240 }}
+            style={{ minWidth: 200, flex: '1 1 200px', maxWidth: 280 }}
             value={selectedExercise}
             onChange={setSelectedExercise}
             options={[
@@ -68,29 +72,36 @@ export const PRTimelineChart: React.FC<PRTimelineChartProps> = ({
     >
       {displayedPRs.length > 0 ? (
         <div>
-          <div style={{ maxHeight: showAll ? 650 : 420, overflowY: 'auto', paddingRight: 8 }}>
+          <div
+            className="mobile-touch-scroll"
+            style={{
+              maxHeight: showAll ? 680 : 440,
+              overflowY: 'auto',
+              padding: '16px 12px 12px 10px',
+            }}
+          >
             <Timeline
               mode="left"
               items={displayedPRs.map((pr) => ({
                 label: (
-                  <div style={{ color: '#8c8c8c', fontSize: 12 }}>
+                  <div style={{ color: '#8c8c8c', fontSize: 12, paddingTop: 2 }}>
                     {dayjs(pr.date).format('DD MMM YYYY')}
                   </div>
                 ),
-                dot: <Trophy size={14} color="#faad14" />,
+                dot: <Trophy size={15} color="#faad14" style={{ marginTop: 2 }} />,
                 children: (
-                  <div style={{ marginBottom: 14 }}>
+                  <div style={{ marginBottom: 18 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                       <Text strong style={{ color: '#d9d9d9', fontSize: 14 }}>
                         {pr.exerciseTitle}
                       </Text>
                       {pr.muscleGroups.map((mg) => (
-                        <Tag key={mg} color="blue" style={{ fontSize: 11 }}>
+                        <Tag key={mg} color="blue" style={{ fontSize: 10, padding: '0 5px' }}>
                           {mg}
                         </Tag>
                       ))}
                     </div>
-                    <Space size="middle" style={{ marginTop: 4 }}>
+                    <Space size="middle" wrap style={{ marginTop: 4 }}>
                       <Text style={{ color: '#52c41a', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                         <Flame size={14} color="#52c41a" />
                         {pr.weightKg} kg × {pr.reps} reps
