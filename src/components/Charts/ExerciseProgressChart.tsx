@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Card, Select, Switch, Space, Typography, Row, Col, Statistic, Tag, Empty } from 'antd';
 import { TrendingUp, Trophy, Zap, Layers, Weight } from 'lucide-react';
@@ -28,6 +28,18 @@ export const ExerciseProgressChart: React.FC<ExerciseProgressChartProps> = ({
     if (bench) return bench.exerciseTitle;
     return exerciseStats[0]?.exerciseTitle || '';
   });
+
+  useEffect(() => {
+    if (defaultExercise) {
+      setSelectedExercise(defaultExercise);
+    }
+  }, [defaultExercise]);
+
+  useEffect(() => {
+    if (!selectedExercise && exerciseStats.length > 0) {
+      setSelectedExercise(exerciseStats[0].exerciseTitle);
+    }
+  }, [exerciseStats, selectedExercise]);
 
   const [showRawSets, setShowRawSets] = useState<boolean>(true);
   const [showConfidenceBand, setShowConfidenceBand] = useState<boolean>(true);

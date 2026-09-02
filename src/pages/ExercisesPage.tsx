@@ -12,7 +12,7 @@ import { ExerciseStats, MuscleGroup } from '../types';
 const { Title, Text } = Typography;
 
 export const ExercisesPage: React.FC = () => {
-  const { exerciseStats, allSets } = useWorkoutData();
+  const { exerciseStats, filteredSets } = useWorkoutData();
 
   const [selectedExerciseForChart, setSelectedExerciseForChart] = useState<string>('Bench Press (Dumbbell)');
   const [searchQuery, setSearchQuery] = useState('');
@@ -151,7 +151,7 @@ export const ExercisesPage: React.FC = () => {
       <div style={{ marginBottom: 24 }}>
         <ExerciseProgressChart
           exerciseStats={exerciseStats}
-          allSets={allSets}
+          allSets={filteredSets}
           defaultExercise={selectedExerciseForChart}
         />
       </div>
